@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-11 12:34+0200\n"
+"POT-Creation-Date: 2020-08-11 14:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,42 +18,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: tasks/models.py:7 tasks/models.py:31
+#: tasks/models.py:7 tasks/models.py:34 tasks/templates/index.html:10
 msgid "title"
 msgstr "cím"
 
-#: tasks/models.py:12
+#: tasks/models.py:15
 msgid "owner"
 msgstr "felelős"
 
-#: tasks/models.py:16 tasks/models.py:28
+#: tasks/models.py:19 tasks/models.py:31 tasks/templates/index.html:9
 msgid "project"
 msgstr "projekt"
 
-#: tasks/models.py:17
+#: tasks/models.py:20
 msgid "projects"
 msgstr "projektek"
 
-#: tasks/models.py:33
+#: tasks/models.py:36
 msgid "description"
 msgstr "leírás"
 
-#: tasks/models.py:35
+#: tasks/models.py:38 tasks/templates/index.html:12
 msgid "due date"
 msgstr "határidő"
 
-#: tasks/models.py:37
+#: tasks/models.py:40 tasks/templates/index.html:13
 msgid "created at"
 msgstr "létrehozva"
 
-#: tasks/models.py:42
+#: tasks/models.py:48 tasks/templates/index.html:11
 msgid "assignee"
 msgstr "felelős"
 
-#: tasks/models.py:47
+#: tasks/models.py:52
 msgid "task"
 msgstr "feladat"
 
-#: tasks/models.py:48
+#: tasks/models.py:53
 msgid "tasks"
 msgstr "feladatok"
