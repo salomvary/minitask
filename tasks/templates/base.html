@@ -12,23 +12,15 @@
   </head>
 
   <body>
-    <header>
-      <div>
-        <section
-        >
-          <span href="{% url 'index' %}">Home</span>
-        </section>
-        {% comment %} <section role="toolbar">
-          {% if user.is_authenticated %}
-              {{ user.get_username }}
-              (<a href="{% url 'auth_logout' %}">{% trans "Sign Out" %}</a>)
-          {% else %}
-            <a href="{% url 'auth_login' %}">{% trans "Sign In" %}</a>
-          {% endif %}
-        </section> {% endcomment %}
-      </div>
-    </header>
-    <main>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <span class="navbar-brand">Minitask</span>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'index' %}">{% translate "tasks"|title %} <span class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+    </nav>
+    <main role="main" class="container">
       {% block content %} Body content {% endblock %}
     </main>
   </body>
