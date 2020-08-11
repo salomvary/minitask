@@ -39,3 +39,11 @@ The application should be listening at http://hostname:8000.
     heroku config:set DEBUG=false
     # Generate a long secret, eg. with `pwgen -sy 50`
     heroku config:set SECRET_KEY=something_very_secret
+    # Optional
+    heroku config:set LANGUAGE_CODE=hu-hu
+    heroku config:set TIME_ZONE=Europe/Budapest
+    # Deploy
+    git push heroku master
+    # Create superuser
+    heroku run python manage.py createsuperuser
+
