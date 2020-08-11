@@ -187,3 +187,5 @@ if os.environ.get('SERVE_STATIC', False):
 
     # Enable GZip.
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+LOGIN_URL = "/admin/login/"
