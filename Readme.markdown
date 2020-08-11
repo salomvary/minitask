@@ -28,3 +28,14 @@ Running migrations:
 
 The application should be listening at http://hostname:8000.
 
+
+## Deploying to Heroku
+
+    heroku create my-tasks
+    heroku addons:create heroku-postgresql:hobby-dev
+    heroku config:set ALLOWED_HOSTS=my-tasks.herokuapp.com
+    heroku config:set SERVE_STATIC=true
+    heroku config:set ENABLE_HEROKU_LOGGING=true
+    heroku config:set DEBUG=false
+    # Generate a long secret, eg. with `pwgen -sy 50`
+    heroku config:set SECRET_KEY=something_very_secret
