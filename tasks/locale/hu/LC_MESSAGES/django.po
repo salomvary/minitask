@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-11 14:32+0200\n"
+"POT-Creation-Date: 2020-08-11 15:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,6 +54,14 @@ msgstr "felelős"
 msgid "task"
 msgstr "feladat"
 
-#: tasks/models.py:53
+#: tasks/models.py:53 tasks/templates/base.html:19
 msgid "tasks"
 msgstr "feladatok"
+
+#: tasks/templates/base.html:23
+msgid "admin"
+msgstr "adminisztráció"
+
+#: tasks/templates/base.html:27
+msgid "sign out"
+msgstr "kilépés"
