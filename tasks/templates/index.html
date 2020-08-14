@@ -3,6 +3,12 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
+<div class="row justify-content-end my-4">
+  <a href="{% url 'new' %}" class="btn btn-primary">
+    {% trans "New task" %}
+  </a>
+</div>
+
 <table class="table my-4">
   <thead>
     <tr>
@@ -16,7 +22,11 @@
   {% for task in tasks %}
     <tr>
       <td>{{task.project}}</td>
-      <td>{{task.title}}</td>
+      <td>
+        <a href="{% url 'detail' task.id %}">
+          {{task.title}}
+        </a>
+      </td>
       <td>{{task.assignee}}</td>
       <td>{{task.due_date}}</td>
       <td>{{task.created_at}}</td>

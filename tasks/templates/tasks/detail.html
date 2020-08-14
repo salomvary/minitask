@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{{task.title}}{% endblock %}
+{% block content %}
+
+<h2>{{task.title}}</h2>
+
+<table class="table">
+  <tbody>
+    <tr>
+      <th scope="row">
+        {% translate "description"|title %}
+      </th>
+      <td>
+        {{ task.description|linebreaks }}
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">
+        {% translate "due date"|title %}
+      </th>
+      <td>
+        {{ task.due_date }}
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">
+        {% translate "created at"|title %}
+      </th>
+      <td>
+        {{ task.created_at }}
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">
+        {% translate "assignee"|title %}
+      </th>
+      <td>
+        {{ task.assignee }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="row justify-content-end my-4">
+  <a href="{% url 'edit' task.id %}" class="btn btn-primary">
+    {% translate "Edit" %}
+  </a>
+</div>
+
+{% endblock %}
