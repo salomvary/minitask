@@ -21,6 +21,13 @@ def new_task(request):
 
 
 @login_required
+def copy_task(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    form = NewTaskForm(None, instance=task)
+    return render(request, "tasks/new.html", {"user": request.user, "form": form})
+
+
+@login_required
 def task_detail(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     return render(request, "tasks/detail.html", {"user": request.user, "task": task})
@@ -34,7 +41,13 @@ def edit_task(request, task_id):
     if request.method == "POST":
         if form.is_valid():
             form.save()
-            return redirect("detail", task.id)
+            action = request.POST.get("action")
+            if action == "copy":
+                return redirect("copy", task.id)
+            elif action == "new":
+                return redirect("new")
+            else:
+                return redirect("detail", task.id)
         else:
             return render(
                 request,
@@ -55,7 +68,13 @@ def create_task(request):
     form = NewTaskForm(request.POST)
     if form.is_valid():
         task = form.save()
-        return redirect("detail", task.id)
+        action = request.POST.get("action")
+        if action == "copy":
+            return redirect("copy", task.id)
+        elif action == "new":
+            return redirect("new")
+        else:
+            return redirect("detail", task.id)
     else:
         return render(
             request, "tasks/new.html", {"user": request.user, "form": form}, status=400

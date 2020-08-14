@@ -52,6 +52,9 @@
 </table>
 
 <div class="text-right my-4">
+  <a href="{% url 'copy' task.id %}" class="btn btn-secondary">
+    {% translate "Duplicate" %}
+  </a>
   <a href="{% url 'edit' task.id %}" class="btn btn-primary">
     {% translate "Edit" %}
   </a>
