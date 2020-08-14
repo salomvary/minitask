@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-14 11:56+0200\n"
+"POT-Creation-Date: 2020-08-14 13:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: tasks/models.py:7 tasks/models.py:42 tasks/templates/index.html:11
+#: tasks/models.py:7 tasks/models.py:40 tasks/templates/index.html:11
 msgid "title"
 msgstr "cím"
 
@@ -26,7 +26,7 @@ msgstr "cím"
 msgid "owner"
 msgstr "felelős"
 
-#: tasks/models.py:19 tasks/models.py:39 tasks/templates/index.html:10
+#: tasks/models.py:19 tasks/models.py:37 tasks/templates/index.html:10
 msgid "project"
 msgstr "projekt"
 
@@ -34,49 +34,65 @@ msgstr "projekt"
 msgid "projects"
 msgstr "projektek"
 
-#: tasks/models.py:30
+#: tasks/models.py:28
 msgid "open"
 msgstr "nyitott"
 
-#: tasks/models.py:31
+#: tasks/models.py:29
 msgid "in progress"
 msgstr "folyamatban"
 
-#: tasks/models.py:32
+#: tasks/models.py:30
 msgid "done"
 msgstr "kész"
 
-#: tasks/models.py:44 tasks/templates/tasks/detail.html:13
+#: tasks/models.py:42 tasks/templates/tasks/detail.html:13
 msgid "description"
 msgstr "leírás"
 
-#: tasks/models.py:46 tasks/templates/index.html:14
+#: tasks/models.py:44 tasks/templates/index.html:14
 #: tasks/templates/tasks/detail.html:29
 msgid "due date"
 msgstr "határidő"
 
-#: tasks/models.py:48 tasks/templates/index.html:15
+#: tasks/models.py:46 tasks/models.py:76 tasks/templates/index.html:15
 #: tasks/templates/tasks/detail.html:37
 msgid "created at"
 msgstr "létrehozva"
 
-#: tasks/models.py:51 tasks/templates/index.html:12
+#: tasks/models.py:49 tasks/templates/index.html:12
 #: tasks/templates/tasks/detail.html:21
 msgid "status"
 msgstr "állapot"
 
-#: tasks/models.py:60 tasks/templates/index.html:13
+#: tasks/models.py:58 tasks/templates/index.html:13
 #: tasks/templates/tasks/detail.html:45
 msgid "assignee"
 msgstr "felelős"
 
-#: tasks/models.py:64
+#: tasks/models.py:62
 msgid "task"
 msgstr "feladat"
 
-#: tasks/models.py:65 tasks/templates/base.html:19
+#: tasks/models.py:63 tasks/templates/base.html:19
 msgid "tasks"
 msgstr "feladatok"
+
+#: tasks/models.py:71 tasks/models.py:89
+msgid "notes"
+msgstr "megjegyzések"
+
+#: tasks/models.py:74
+msgid "body"
+msgstr "megjegyzés"
+
+#: tasks/models.py:84
+msgid "author"
+msgstr "szerző"
+
+#: tasks/models.py:88
+msgid "note"
+msgstr "megjegyzés"
 
 #: tasks/templates/base.html:23
 msgid "admin"
@@ -98,6 +114,14 @@ msgstr "Másolat"
 #: tasks/templates/tasks/detail.html:59
 msgid "Edit"
 msgstr "Szerkesztés"
+
+#: tasks/templates/tasks/detail.html:63
+msgid "Notes"
+msgstr "Megjegyzések"
+
+#: tasks/templates/tasks/detail.html:77
+msgid "Add note"
+msgstr "Megjegyzés hozzáfűzése"
 
 #: tasks/templates/tasks/edit.html:3 tasks/templates/tasks/edit.html:6
 msgid "Editing task"

@@ -6,6 +6,7 @@ from django.shortcuts import render, get_object_or_404
 
 from .models import Task
 from .forms.new_task_form import NewTaskForm
+from .forms.note_form import NoteForm
 
 
 @login_required
@@ -30,7 +31,12 @@ def copy_task(request, task_id):
 @login_required
 def task_detail(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
-    return render(request, "tasks/detail.html", {"user": request.user, "task": task})
+    note_form = NoteForm(request.POST)
+    return render(
+        request,
+        "tasks/detail.html",
+        {"user": request.user, "task": task, "note_form": note_form},
+    )
 
 
 @login_required
@@ -79,3 +85,24 @@ def create_task(request):
         return render(
             request, "tasks/new.html", {"user": request.user, "form": form}, status=400
         )
+
+
+@login_required
+def create_note(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    form = NoteForm(request.POST)
+    if request.method == "POST":
+        if form.is_valid():
+            form.instance.task = task
+            form.instance.author = request.user
+            form.save()
+            return redirect("detail", task.id)
+        else:
+            return render(
+                request,
+                "tasks/detail.html",
+                {"user": request.user, "note_form": form},
+                status=400,
+            )
+    else:
+        return redirect("detail", task.id)

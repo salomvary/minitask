@@ -23,8 +23,6 @@ class Project(models.Model):
         return self.title
 
 
-
-
 class Task(models.Model):
     STATUS_CHOICES = [
         ("open", _("open")),
@@ -66,3 +64,29 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Note(models.Model):
+    task = models.ForeignKey(
+        Task, on_delete=models.CASCADE, related_name="notes", verbose_name=_("notes"),
+    )
+
+    body = models.TextField(_("body"), blank=True)
+
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+
+    author = models.ForeignKey(
+        User,
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+        related_name="author",
+        verbose_name=_("author"),
+    )
+
+    class Meta:
+        verbose_name = _("note")
+        verbose_name_plural = _("notes")
+
+    def __str__(self):
+        return f"Note by {self.author} on {self.created_at}"

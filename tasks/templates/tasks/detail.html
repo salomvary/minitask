@@ -60,4 +60,23 @@
   </a>
 </div>
 
+<h3>{% translate "Notes" %}</h3>
+
+{% for note in task.notes.all %}
+  <p>
+    {{ note.body|linebreaks }}
+  </p>
+{% endfor %}
+
+<form method="POST" action="{% url 'create_note' task.id %}">
+  {% csrf_token %}
+  {% include "form.html" with form=note_form %}
+
+  <div class="text-right my-4">
+    <button class="btn btn-primary ml-3">
+      {% translate "Add note" %}
+    </button>
+  </div>
+</form>
+
 {% endblock %}
