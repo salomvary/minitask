@@ -14,9 +14,21 @@ Running the development server:
 
     poetry run python manage.py runserver
 
+Specifying the server language:
+
+    LANGUAGE_CODE=hu-hu poetry run python manage.py runserver
+
 Running migrations:
 
     poetry run python manage.py migrate
+
+Working with translations:
+
+    poetry run django-admin makemessages --locale=hu
+    # Edit tasks/locale/hu/LC_MESSAGES/django.po
+    poetry run django-admin compilemessages
+
+
 
 ## Running on Ubuntu LTS
 
