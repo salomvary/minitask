@@ -23,10 +23,10 @@
           {{task.title}}
         </a>
       </td>
-      <td>{% task_status_badge task %}</td>
+      <td class="text-nowrap">{% task_status_badge task %}</td>
       <td>{{task.assignee}}</td>
-      <td>{{task.due_date}}</td>
-      <td>{{task.created_at}}</td>
+      <td class="text-nowrap">{{task.due_date}}</td>
+      <td class="text-nowrap">{{task.created_at}}</td>
     </tr>
   {% endfor %}
 </table>
