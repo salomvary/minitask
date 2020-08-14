@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load tasks_extras %}
 {% block title %}Home{% endblock %}
 {% block content %}
 
@@ -14,6 +15,7 @@
     <tr>
       <th scope="col">{% trans "project"|title %}</th>
       <th scope="col">{% trans "title"|title %}</th>
+      <th scope="col">{% trans "status"|title %}</th>
       <th scope="col">{% trans "assignee"|title %}</th>
       <th scope="col">{% trans "due date"|title %}</th>
       <th scope="col">{% trans "created at"|title %}</th>
@@ -27,6 +29,7 @@
           {{task.title}}
         </a>
       </td>
+      <td>{% task_status_badge task %}</td>
       <td>{{task.assignee}}</td>
       <td>{{task.due_date}}</td>
       <td>{{task.created_at}}</td>

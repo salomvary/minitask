@@ -23,7 +23,15 @@ class Project(models.Model):
         return self.title
 
 
+
+
 class Task(models.Model):
+    STATUS_CHOICES = [
+        ("open", _("open")),
+        ("in_progress", _("in progress")),
+        ("done", _("done")),
+    ]
+
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
@@ -38,6 +46,10 @@ class Task(models.Model):
     due_date = models.DateField(_("due date"), blank=True, null=True)
 
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+
+    status = models.CharField(
+        _("status"), max_length=20, default="open", choices=STATUS_CHOICES
+    )
 
     assignee = models.ForeignKey(
         User,

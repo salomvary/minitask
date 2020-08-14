@@ -10,7 +10,7 @@ class NewTaskForm(ModelForm):
 
     class Meta:
         model = Task
-        fields = ("project", "title", "description", "due_date", "assignee")
+        fields = ("project", "title", "description", "status", "due_date", "assignee")
         widgets = {
             "due_date": DateInput(attrs={"type": "date"}),
         }

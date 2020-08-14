@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load tasks_extras %}
 {% block title %}{{task.title}}{% endblock %}
 {% block content %}
 
@@ -13,6 +14,14 @@
       </th>
       <td>
         {{ task.description|linebreaks }}
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">
+        {% translate "status"|title %}
+      </th>
+      <td>
+        {% task_status_badge task %}
       </td>
     </tr>
     <tr>
