@@ -70,6 +70,7 @@ class ViewsTests(TestCase):
         response = client.post("/tasks", {
             "project": project.id,
             "title": "Test Task",
+            "status": "open",
         })
 
         self.assertEqual(response.status_code, 302)
@@ -139,7 +140,8 @@ class ViewsTests(TestCase):
         client.login(username="testuser", password="test")
         response = client.post("/tasks/" + str(task.id) + "/edit", {
             "project": project.id,
-            "title": "New Title"
+            "title": "New Title",
+            "status": "open",
         })
 
         self.assertEqual(response.status_code, 302)
