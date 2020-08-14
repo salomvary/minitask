@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-14 09:32+0200\n"
+"POT-Creation-Date: 2020-08-14 10:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,16 +69,23 @@ msgstr "adminisztráció"
 msgid "sign out"
 msgstr "kilépés"
 
-#: tasks/templates/index.html:8 tasks/templates/tasks/edit.html:3
-#: tasks/templates/tasks/new.html:3 tasks/templates/tasks/new.html:6
-#| msgid "task"
+#: tasks/templates/index.html:8 tasks/templates/tasks/new.html:3
+#: tasks/templates/tasks/new.html:6
 msgid "New task"
-msgstr " Új feladat"
+msgstr "Új feladat"
 
 #: tasks/templates/tasks/detail.html:47
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: tasks/templates/tasks/edit.html:6
-msgid "Editing"
-msgstr "Szerkesztés alatt"
+#: tasks/templates/tasks/edit.html:3 tasks/templates/tasks/edit.html:6
+msgid "Editing task"
+msgstr "Feladat szerkesztése"
+
+#: tasks/templates/tasks/edit.html:14 tasks/templates/tasks/new.html:14
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: tasks/templates/tasks/edit.html:17 tasks/templates/tasks/new.html:17
+msgid "Save"
+msgstr "Mentés"

@@ -3,7 +3,7 @@
 {% block title %}{{task.title}}{% endblock %}
 {% block content %}
 
-<h2>{{task.title}}</h2>
+<h2 class="my-3">{{task.title}}</h2>
 
 <table class="table">
   <tbody>
@@ -42,7 +42,7 @@
   </tbody>
 </table>
 
-<div class="row justify-content-end my-4">
+<div class="text-right my-4">
   <a href="{% url 'edit' task.id %}" class="btn btn-primary">
     {% translate "Edit" %}
   </a>

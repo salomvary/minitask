@@ -3,12 +3,20 @@
 {% block title %}{% trans "New task" %}{% endblock %}
 {% block content %}
 
-<h2>{% trans "New task" %}</h2>
+<h2 class="my-3">{% trans "New task" %}</h2>
 
 <form method="POST" action="{% url 'create' %}">
   {% csrf_token %}
   {% include "form.html" %}
-  <input type="submit" value="Submit">
+
+  <div class="text-right my-4">
+    <a href="{% url 'index' %}">
+      {% translate "Cancel" %}
+    </a>
+    <button class="btn btn-primary ml-3">
+      {% translate "Save" %}
+    </a>
+  </div>
 </form>
 
 {% endblock %}
