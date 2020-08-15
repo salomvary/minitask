@@ -71,7 +71,7 @@ class Note(models.Model):
         Task, on_delete=models.CASCADE, related_name="notes", verbose_name=_("notes"),
     )
 
-    body = models.TextField(_("body"), blank=True)
+    body = models.TextField(_("body"))
 
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
 

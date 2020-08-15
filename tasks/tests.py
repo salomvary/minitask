@@ -185,6 +185,24 @@ class ViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
+    def test_create_note_not_valid(self):
+        """No new note is created with invalid form data"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post("/tasks/" + str(task.id) + "/note", {"body": "   "})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(Note.objects.all()), 0)
+
     def test_create_note(self):
         """New note is created"""
 
@@ -198,7 +216,9 @@ class ViewsTests(TestCase):
 
         client = Client()
         client.login(username="testuser", password="test")
-        response = client.post("/tasks/" + str(task.id) + "/note", {"body": "Test Note"})
+        response = client.post(
+            "/tasks/" + str(task.id) + "/note", {"body": "Test Note"}
+        )
 
         self.assertEqual(response.status_code, 302)
         note = Note.objects.all()[0]

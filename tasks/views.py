@@ -98,7 +98,7 @@ def create_note(request, task_id):
             return render(
                 request,
                 "tasks/detail.html",
-                {"user": request.user, "note_form": form},
+                {"user": request.user, "task": task, "note_form": form},
                 status=400,
             )
     else:
