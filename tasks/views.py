@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 
 from .forms.new_task_form import NewTaskForm
 from .forms.note_form import NoteForm
@@ -93,7 +94,9 @@ def create_note(request, task_id):
             form.instance.task = task
             form.instance.author = request.user
             form.save()
-            return redirect("detail", task.id)
+            return redirect(
+                reverse("detail", args=[task.id]) + "#note-" + str(form.instance.id)
+            )
         else:
             return render(
                 request,

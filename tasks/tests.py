@@ -220,8 +220,10 @@ class ViewsTests(TestCase):
             "/tasks/" + str(task.id) + "/note", {"body": "Test Note"}
         )
 
-        self.assertEqual(response.status_code, 302)
         note = Note.objects.all()[0]
+        self.assertRedirects(
+            response, "/tasks/" + str(task.id) + "#note-" + str(note.id), 302
+        )
         self.assertEqual(note.body, "Test Note")
         self.assertEqual(note.task, task)
         self.assertEqual(note.author, user)
