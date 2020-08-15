@@ -63,12 +63,17 @@
 <h3>{% translate "Notes" %}</h3>
 
 {% for note in task.notes.all %}
-  <p>
-    {{ note.body|linebreaks }}
-  </p>
+  <section class="border-bottom pt-3">
+    <h4 class="h6">
+      {{ note.author }} ∙ <span class="font-weight-normal">{{ note.created_at }}</span>
+    </h4>
+    <article>
+      {{ note.body|linebreaks }}
+    </article>
+  </section>
 {% endfor %}
 
-<form method="POST" action="{% url 'create_note' task.id %}">
+<form method="POST" action="{% url 'create_note' task.id %}" class="my-3">
   {% csrf_token %}
   {% include "form.html" with form=note_form %}
 
