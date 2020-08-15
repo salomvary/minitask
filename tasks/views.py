@@ -1,12 +1,9 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.template.loader import render_to_string
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Task
 from .forms.new_task_form import NewTaskForm
 from .forms.note_form import NoteForm
+from .models import Task
 
 
 @login_required

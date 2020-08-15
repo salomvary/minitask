@@ -1,5 +1,6 @@
+from django.forms import DateInput, ModelForm
+
 from tasks.models import Task
-from django.forms import ModelForm, DateField, DateInput
 
 
 class NewTaskForm(ModelForm):

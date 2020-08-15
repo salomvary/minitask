@@ -1,5 +1,6 @@
-from tasks.models import Note
 from django.forms import ModelForm
+
+from tasks.models import Note
 
 
 class NoteForm(ModelForm):
