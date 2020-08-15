@@ -9,22 +9,48 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tasks', '0006_task_status'),
+        ("tasks", "0006_task_status"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Note',
+            name="Note",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('body', models.TextField(blank=True, verbose_name='body')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='author', to=settings.AUTH_USER_MODEL, verbose_name='author')),
-                ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='task', to='tasks.task', verbose_name='task')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("body", models.TextField(blank=True, verbose_name="body")),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="author",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="author",
+                    ),
+                ),
+                (
+                    "task",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="task",
+                        to="tasks.task",
+                        verbose_name="task",
+                    ),
+                ),
             ],
-            options={
-                'verbose_name': 'note',
-                'verbose_name_plural': 'notes',
-            },
+            options={"verbose_name": "note", "verbose_name_plural": "notes",},
         ),
     ]

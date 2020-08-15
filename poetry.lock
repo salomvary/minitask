@@ -18,7 +18,7 @@ version = "3.2.10"
 tests = ["pytest", "pytest-asyncio"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "An abstract syntax tree for Python with inference support."
 name = "astroid"
 optional = false

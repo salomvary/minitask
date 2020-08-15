@@ -67,11 +67,9 @@ class ViewsTests(TestCase):
 
         client = Client()
         client.login(username="testuser", password="test")
-        response = client.post("/tasks", {
-            "project": project.id,
-            "title": "Test Task",
-            "status": "open",
-        })
+        response = client.post(
+            "/tasks", {"project": project.id, "title": "Test Task", "status": "open",}
+        )
 
         self.assertEqual(response.status_code, 302)
         task = Task.objects.all()[0]
@@ -138,11 +136,10 @@ class ViewsTests(TestCase):
 
         client = Client()
         client.login(username="testuser", password="test")
-        response = client.post("/tasks/" + str(task.id) + "/edit", {
-            "project": project.id,
-            "title": "New Title",
-            "status": "open",
-        })
+        response = client.post(
+            "/tasks/" + str(task.id) + "/edit",
+            {"project": project.id, "title": "New Title", "status": "open",},
+        )
 
         self.assertEqual(response.status_code, 302)
         task = Task.objects.get(pk=task.id)
@@ -160,10 +157,13 @@ class ViewsTests(TestCase):
 
         client = Client()
         client.login(username="testuser", password="test")
-        response = client.post("/tasks/" + str(task.id) + "/edit", {
-            # "project": project.id,
-            "title": "New Title"
-        })
+        response = client.post(
+            "/tasks/" + str(task.id) + "/edit",
+            {
+                # "project": project.id,
+                "title": "New Title"
+            },
+        )
 
         # self.assertEqual(response.status_code, 400)
-        self.assertContains(response, "New Title", status_code = 400)
+        self.assertContains(response, "New Title", status_code=400)

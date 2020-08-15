@@ -9,18 +9,32 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tasks', '0004_auto_20200811_1031'),
+        ("tasks", "0004_auto_20200811_1031"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='project',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='owner', to=settings.AUTH_USER_MODEL, verbose_name='owner'),
+            model_name="project",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="owner",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='task',
-            name='assignee',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='assignee', to=settings.AUTH_USER_MODEL, verbose_name='assignee'),
+            model_name="task",
+            name="assignee",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="assignee",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="assignee",
+            ),
         ),
     ]
