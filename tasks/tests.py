@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
-from .models import Task, Project
+from .models import Task, Project, Note
 
 
 class ViewsTests(TestCase):
@@ -166,3 +166,42 @@ class ViewsTests(TestCase):
 
         # self.assertEqual(response.status_code, 400)
         self.assertContains(response, "New Title", status_code=400)
+
+    def test_create_note_unauthenticated(self):
+        """Creating note redirects to login when unauthenticated"""
+
+        client = Client()
+        response = client.post("/tasks/1/note")
+        self.assertEqual(response.status_code, 302)
+
+    def test_create_note_not_found(self):
+        """Creating note for a non-existent task renders 404"""
+
+        User.objects.create_user("testuser", password="test")
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post("/tasks/1/note")
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_create_note(self):
+        """New note is created"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post("/tasks/" + str(task.id) + "/note", {"body": "Test Note"})
+
+        self.assertEqual(response.status_code, 302)
+        note = Note.objects.all()[0]
+        self.assertEqual(note.body, "Test Note")
+        self.assertEqual(note.task, task)
+        self.assertEqual(note.author, user)
