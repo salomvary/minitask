@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-14 13:04+0200\n"
+"POT-Creation-Date: 2020-08-17 09:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,11 +107,25 @@ msgstr "kilépés"
 msgid "New task"
 msgstr "Új feladat"
 
+#: tasks/templates/notes/edit.html:3 tasks/templates/notes/edit.html:6
+msgid "Editing note"
+msgstr "Megjegyzés szerkesztése"
+
+#: tasks/templates/notes/edit.html:14 tasks/templates/tasks/edit.html:14
+#: tasks/templates/tasks/new.html:14
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: tasks/templates/notes/edit.html:17 tasks/templates/tasks/edit.html:23
+#: tasks/templates/tasks/new.html:23
+msgid "Save"
+msgstr "Mentés"
+
 #: tasks/templates/tasks/detail.html:56
 msgid "Duplicate"
 msgstr "Másolat"
 
-#: tasks/templates/tasks/detail.html:59
+#: tasks/templates/tasks/detail.html:59 tasks/templates/tasks/detail.html:70
 msgid "Edit"
 msgstr "Szerkesztés"
 
@@ -119,17 +133,13 @@ msgstr "Szerkesztés"
 msgid "Notes"
 msgstr "Megjegyzések"
 
-#: tasks/templates/tasks/detail.html:77
+#: tasks/templates/tasks/detail.html:89
 msgid "Add note"
 msgstr "Megjegyzés hozzáfűzése"
 
 #: tasks/templates/tasks/edit.html:3 tasks/templates/tasks/edit.html:6
 msgid "Editing task"
 msgstr "Feladat szerkesztése"
-
-#: tasks/templates/tasks/edit.html:14 tasks/templates/tasks/new.html:14
-msgid "Cancel"
-msgstr "Mégsem"
 
 #: tasks/templates/tasks/edit.html:17 tasks/templates/tasks/new.html:17
 msgid "Save and duplicate"
@@ -138,7 +148,3 @@ msgstr "Mentés és másolat"
 #: tasks/templates/tasks/edit.html:20 tasks/templates/tasks/new.html:20
 msgid "Save and new"
 msgstr "Mentés és új"
-
-#: tasks/templates/tasks/edit.html:23 tasks/templates/tasks/new.html:23
-msgid "Save"
-msgstr "Mentés"

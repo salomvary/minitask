@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from .forms.new_task_form import NewTaskForm
 from .forms.note_form import NoteForm
-from .models import Task
+from .models import Task, Note
 
 
 @login_required
@@ -82,6 +82,33 @@ def create_task(request):
     else:
         return render(
             request, "tasks/new.html", {"user": request.user, "form": form}, status=400
+        )
+
+
+@login_required
+def edit_note(request, note_id):
+    note = get_object_or_404(Note, pk=note_id)
+    form = NoteForm(request.POST or None, instance=note)
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return redirect(
+                reverse("detail", args=[note.task.id])
+                + "#note-"
+                + str(form.instance.id)
+            )
+        else:
+            return render(
+                request,
+                "notes/edit.html",
+                {"user": request.user, "note": note, "form": form},
+                status=400,
+            )
+    else:
+        return render(
+            request,
+            "notes/edit.html",
+            {"user": request.user, "note": note, "form": form},
         )
 
 

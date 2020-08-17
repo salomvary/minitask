@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Editing note" %}{% endblock %}
+{% block content %}
+
+<h2 class="my-3">{% trans "Editing note" %}</h2>
+
+<form method="POST" action="{% url 'edit_note' note.id %}">
+  {% csrf_token %}
+  {% include "form.html" %}
+
+  <div class="text-right my-4">
+    <a href="{% url 'detail' note.task.id %}#note-{{note.id}}">
+      {% translate "Cancel" %}
+    </a>
+    <button class="btn btn-primary ml-3">
+      {% translate "Save" %}
+    </button>
+  </div>
+</form>
+
+{% endblock %}

@@ -65,7 +65,9 @@
 {% for note in task.notes.all %}
   <section class="border-bottom pt-3" id="note-{{ note.id }}">
     <h4 class="h6">
-      {{ note.author }} ∙ <span class="font-weight-normal">{{ note.created_at }}</span>
+      {{ note.author }}
+      ∙ <span class="font-weight-normal">{{ note.created_at }}</span>
+      ∙ <a href="{% url 'edit_note' note.id %}">{% translate "Edit" %}</a>
     </h4>
     <article>
       {{ note.body|linebreaks }}

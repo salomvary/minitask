@@ -188,7 +188,7 @@ class ViewsTests(TestCase):
     def test_create_note_not_valid(self):
         """No new note is created with invalid form data"""
 
-        user = User.objects.create_user("testuser", password="test")
+        User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
@@ -227,3 +227,55 @@ class ViewsTests(TestCase):
         self.assertEqual(note.body, "Test Note")
         self.assertEqual(note.task, task)
         self.assertEqual(note.author, user)
+
+    def test_edit_note_unauthenticated(self):
+        """Note edit form redirects to login when unauthenticated"""
+
+        client = Client()
+        response = client.post("/notes/1/edit")
+        self.assertEqual(response.status_code, 302)
+
+    def test_edit_note(self):
+        """Note edit form is rendered"""
+
+        User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        note = Note(task=task, body="Test note")
+        note.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get(f"/notes/{note.id}/edit")
+
+        self.assertContains(response, "Test note", status_code=200)
+
+    def test_edit_note_post(self):
+        """Note is updated"""
+
+        User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        note = Note(task=task, body="Test note")
+        note.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post(f"/notes/{note.id}/edit", {"body": "New test note"})
+
+        self.assertRedirects(
+            response, "/tasks/" + str(task.id) + "#note-" + str(note.id), 302
+        )
+
+        note = Note.objects.get(pk=note.id)
+        self.assertEqual(note.body, "New test note")
