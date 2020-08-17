@@ -34,7 +34,7 @@ class TaskManager(models.Manager):
 
     def sorted_for_dashboard(self):
         return self.extra(select={"status_order": self.CASE_SQL}).order_by(
-            "-status_order", models.F("due_date").asc(nulls_last=True)
+            "-status_order", models.F("due_date").asc(nulls_last=True), "-priority"
         )
 
 
@@ -45,6 +45,14 @@ class Task(models.Model):
         ("open", _("open")),
         ("in_progress", _("in progress")),
         ("done", _("done")),
+    ]
+
+    PRIORITY_CHOICES = [
+        (-2, _("lowest")),
+        (-1, _("low")),
+        (0, _("normal")),
+        (1, _("high")),
+        (2, _("highest")),
     ]
 
     project = models.ForeignKey(
@@ -64,6 +72,10 @@ class Task(models.Model):
 
     status = models.CharField(
         _("status"), max_length=20, default="open", choices=STATUS_CHOICES
+    )
+
+    priority = models.SmallIntegerField(
+        _("priority"), default=0, choices=PRIORITY_CHOICES
     )
 
     assignee = models.ForeignKey(

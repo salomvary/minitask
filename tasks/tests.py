@@ -40,6 +40,21 @@ class ModelTests(TestCase):
         tasks = Task.objects.sorted_for_dashboard().all()
         self.assertEqual(list(tasks), [task_1, task_5, task_10, task_null])
 
+    def test_task_sort_by_priority(self):
+        """Tasks are sorted by priority descending"""
+
+        project = Project(title="Test Project")
+        project.save()
+        normal_task = Task(project=project, priority=0, title="normal")
+        normal_task.save()
+        high_task = Task(project=project, priority=1, title="high")
+        high_task.save()
+        low_task = Task(project=project, priority=-1, title="low")
+        low_task.save()
+
+        tasks = Task.objects.sorted_for_dashboard().all()
+        self.assertEqual(list(tasks), [high_task, normal_task, low_task])
+
 
 class ViewsTests(TestCase):
     def test_index_unauthenticated(self):
@@ -56,7 +71,7 @@ class ViewsTests(TestCase):
 
         project = Project(title="Test Project")
         project.save()
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, title="Test Task", priority=-1)
         task.save()
 
         client = Client()
@@ -66,6 +81,7 @@ class ViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Task")
         self.assertContains(response, "Test Project")
+        self.assertContains(response, "LOW")
 
     def test_new_unauthenticated(self):
         """New task form redirects to login when unauthenticated"""
@@ -104,13 +120,20 @@ class ViewsTests(TestCase):
         client = Client()
         client.login(username="testuser", password="test")
         response = client.post(
-            "/tasks", {"project": project.id, "title": "Test Task", "status": "open",}
+            "/tasks",
+            {
+                "project": project.id,
+                "title": "Test Task",
+                "status": "open",
+                "priority": 2,
+            },
         )
 
         self.assertEqual(response.status_code, 302)
         task = Task.objects.all()[0]
         self.assertEqual(task.title, "Test Task")
         self.assertEqual(task.project, project)
+        self.assertEqual(task.priority, 2)
 
     def test_detail_unauthenticated(self):
         """Task detail redirects to login when unauthenticated"""
@@ -126,7 +149,7 @@ class ViewsTests(TestCase):
 
         project = Project(title="Test Project")
         project.save()
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, title="Test Task", priority=2)
         task.save()
 
         client = Client()
@@ -135,6 +158,7 @@ class ViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Task")
+        self.assertContains(response, "HIGHEST")
 
     def test_edit_unauthenticated(self):
         """Task edit redirects to login when unauthenticated"""
@@ -150,7 +174,7 @@ class ViewsTests(TestCase):
 
         project = Project(title="Test Project")
         project.save()
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, title="Test Task", priority=2)
         task.save()
 
         client = Client()
@@ -159,6 +183,7 @@ class ViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Task")
+        self.assertContains(response, "highest")
 
     def test_edit_post(self):
         """Task is updated"""
@@ -174,12 +199,18 @@ class ViewsTests(TestCase):
         client.login(username="testuser", password="test")
         response = client.post(
             "/tasks/" + str(task.id) + "/edit",
-            {"project": project.id, "title": "New Title", "status": "open",},
+            {
+                "project": project.id,
+                "title": "New Title",
+                "priority": 2,
+                "status": "open",
+            },
         )
 
         self.assertEqual(response.status_code, 302)
         task = Task.objects.get(pk=task.id)
         self.assertEqual(task.title, "New Title")
+        self.assertEqual(task.priority, 2)
 
     def test_edit_post_not_valid(self):
         """Task is updated"""

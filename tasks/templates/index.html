@@ -11,6 +11,7 @@
       <th scope="col">{% trans "title"|title %}</th>
       <th scope="col">{% trans "status"|title %}</th>
       <th scope="col">{% trans "assignee"|title %}</th>
+      <th scope="col">{% trans "priority"|title %}</th>
       <th scope="col">{% trans "due date"|title %}</th>
       <th scope="col">{% trans "created at"|title %}</th>
     </tr>
@@ -26,6 +27,7 @@
         </td>
         <td class="text-nowrap">{% task_status_badge task %}</td>
         <td>{{task.assignee}}</td>
+        <td class="text-nowrap">{% task_priority_badge task %}</td>
         <td class="text-nowrap">{{task.due_date}}</td>
         <td class="text-nowrap">{{task.created_at}}</td>
       </tr>

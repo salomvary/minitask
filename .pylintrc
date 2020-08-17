@@ -146,7 +146,8 @@ disable=print-statement,
         missing-function-docstring,
         no-else-return,
         # TODO: this should actually be fixed: https://learndjango.com/tutorials/django-best-practices-referencing-user-model
-        imported-auth-user
+        imported-auth-user,
+        too-few-public-methods
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
