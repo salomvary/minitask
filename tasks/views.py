@@ -9,7 +9,7 @@ from .models import Task, Note
 
 @login_required
 def index(request):
-    tasks = Task.objects.all()
+    tasks = Task.objects.sorted_for_dashboard().all()
     return render(request, "index.html", {"user": request.user, "tasks": tasks})
 
 

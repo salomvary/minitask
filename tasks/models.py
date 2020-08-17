@@ -23,7 +23,24 @@ class Project(models.Model):
         return self.title
 
 
+class TaskManager(models.Manager):
+    CASE_SQL = """
+        (case
+            when status="done" then 1
+            when status="open" then 2
+            when status="in_progress" then 3
+        end)
+    """
+
+    def sorted_for_dashboard(self):
+        return self.extra(select={"status_order": self.CASE_SQL}).order_by(
+            "-status_order", models.F("due_date").asc(nulls_last=True)
+        )
+
+
 class Task(models.Model):
+    objects = TaskManager()
+
     STATUS_CHOICES = [
         ("open", _("open")),
         ("in_progress", _("in progress")),

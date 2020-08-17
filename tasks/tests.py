@@ -4,6 +4,43 @@ from django.test import Client, TestCase
 from .models import Task, Project, Note
 
 
+class ModelTests(TestCase):
+    def test_task_sort_by_status(self):
+        """Tasks are sorted by status descending"""
+
+        project = Project(title="Test Project")
+        project.save()
+        open_task = Task(project=project, status="open", title="open_task")
+        open_task.save()
+        done_task = Task(project=project, status="done", title="done_task")
+        done_task.save()
+        in_progress_task = Task(
+            project=project, status="in_progress", title="in_progress_task"
+        )
+        in_progress_task.save()
+
+        tasks = Task.objects.sorted_for_dashboard().all()
+        self.assertEqual(list(tasks), [in_progress_task, open_task, done_task])
+
+    def test_task_sort_by_due_date(self):
+        """Tasks are sorted by due date ascending, nulls last"""
+
+        project = Project(title="Test Project")
+        project.save()
+
+        task_null = Task(project=project, due_date=None, title="null")
+        task_null.save()
+        task_5 = Task(project=project, due_date="2020-01-05", title="5")
+        task_5.save()
+        task_1 = Task(project=project, due_date="2020-01-01", title="1")
+        task_1.save()
+        task_10 = Task(project=project, due_date="2020-01-10", title="10")
+        task_10.save()
+
+        tasks = Task.objects.sorted_for_dashboard().all()
+        self.assertEqual(list(tasks), [task_1, task_5, task_10, task_null])
+
+
 class ViewsTests(TestCase):
     def test_index_unauthenticated(self):
         """Index redirects to login when unauthenticated"""
