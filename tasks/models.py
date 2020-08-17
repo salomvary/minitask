@@ -26,9 +26,9 @@ class Project(models.Model):
 class TaskManager(models.Manager):
     CASE_SQL = """
         (case
-            when status="done" then 1
-            when status="open" then 2
-            when status="in_progress" then 3
+            when status='done' then 1
+            when status='open' then 2
+            when status='in_progress' then 3
         end)
     """
 
