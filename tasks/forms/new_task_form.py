@@ -21,5 +21,9 @@ class NewTaskForm(ModelForm):
             "assignee",
         )
         widgets = {
-            "due_date": DateInput(attrs={"type": "date"}),
+            "due_date": DateInput(
+                # ISO date must be used with <input type=date> all times
+                format="%Y-%m-%d",
+                attrs={"type": "date"},
+            ),
         }

@@ -24,6 +24,7 @@ class TaskFilterForm(forms.Form):
         label=_("Due after"),
         required=False,
         widget=forms.DateInput(
+            # ISO date must be used with <input type=date> all times
             format="%Y-%m-%d",
             attrs={"class": "form-control form-control-sm", "type": "date"},
         ),
@@ -33,6 +34,7 @@ class TaskFilterForm(forms.Form):
         label=_("Before"),
         required=False,
         widget=forms.DateInput(
+            # ISO date must be used with <input type=date> all times
             format="%Y-%m-%d",
             attrs={"class": "form-control form-control-sm", "type": "date"},
         ),
