@@ -32,10 +32,34 @@ class TaskManager(models.Manager):
         end)
     """
 
-    def sorted_for_dashboard(self):
-        return self.extra(select={"status_order": self.CASE_SQL}).order_by(
+    def sorted_for_dashboard(
+        self,
+        project=None,
+        due_date_before=None,
+        due_date_after=None,
+        status=None,
+        assignee=None,
+    ):
+        query = self.extra(select={"status_order": self.CASE_SQL}).order_by(
             "-status_order", models.F("due_date").asc(nulls_last=True), "-priority"
         )
+
+        if project is not None:
+            query = query.filter(project=project)
+
+        if due_date_after is not None:
+            query = query.filter(due_date__gte=due_date_after)
+
+        if due_date_before is not None:
+            query = query.filter(due_date__lte=due_date_before)
+
+        if status is not None:
+            query = query.filter(status=status)
+
+        if assignee is not None:
+            query = query.filter(assignee=assignee)
+
+        return query
 
 
 class Task(models.Model):

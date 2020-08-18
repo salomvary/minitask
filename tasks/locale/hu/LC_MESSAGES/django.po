@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-17 19:40+0200\n"
+"POT-Creation-Date: 2020-08-18 11:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: tasks/models.py:7 tasks/models.py:65 tasks/templates/index.html:11
+#: tasks/forms/task_filter_form.py:14
+msgid "Project"
+msgstr "Projekt"
+
+#: tasks/forms/task_filter_form.py:21
+msgid "Due after"
+msgstr "Határidő után"
+
+#: tasks/forms/task_filter_form.py:29
+msgid "Before"
+msgstr "Előtt"
+
+#: tasks/forms/task_filter_form.py:37
+msgid "Status"
+msgstr "Állapot"
+
+#: tasks/forms/task_filter_form.py:45
+msgid "Assignee"
+msgstr "Felelős"
+
+#: tasks/models.py:7 tasks/models.py:89 tasks/templates/index.html:13
 msgid "title"
 msgstr "cím"
 
@@ -26,7 +46,7 @@ msgstr "cím"
 msgid "owner"
 msgstr "felelős"
 
-#: tasks/models.py:19 tasks/models.py:62 tasks/templates/index.html:10
+#: tasks/models.py:19 tasks/models.py:86 tasks/templates/index.html:12
 msgid "project"
 msgstr "projekt"
 
@@ -34,88 +54,88 @@ msgstr "projekt"
 msgid "projects"
 msgstr "projektek"
 
-#: tasks/models.py:45
+#: tasks/models.py:69
 msgid "open"
 msgstr "nyitott"
 
-#: tasks/models.py:46
+#: tasks/models.py:70
 msgid "in progress"
 msgstr "folyamatban"
 
-#: tasks/models.py:47
+#: tasks/models.py:71
 msgid "done"
 msgstr "kész"
 
-#: tasks/models.py:51
+#: tasks/models.py:75
 msgid "lowest"
 msgstr "legalacsonyabb"
 
-#: tasks/models.py:52
+#: tasks/models.py:76
 msgid "low"
 msgstr "alacsony"
 
-#: tasks/models.py:53
+#: tasks/models.py:77
 msgid "normal"
 msgstr "normál"
 
-#: tasks/models.py:54
+#: tasks/models.py:78
 msgid "high"
 msgstr "magas"
 
-#: tasks/models.py:55
+#: tasks/models.py:79
 msgid "highest"
 msgstr "legmagasabb"
 
-#: tasks/models.py:67 tasks/templates/tasks/detail.html:13
+#: tasks/models.py:91 tasks/templates/tasks/detail.html:13
 msgid "description"
 msgstr "leírás"
 
-#: tasks/models.py:69 tasks/templates/index.html:15
+#: tasks/models.py:93 tasks/templates/index.html:17
 #: tasks/templates/tasks/detail.html:37
 msgid "due date"
 msgstr "határidő"
 
-#: tasks/models.py:71 tasks/models.py:105 tasks/templates/index.html:16
+#: tasks/models.py:95 tasks/models.py:129 tasks/templates/index.html:18
 #: tasks/templates/tasks/detail.html:45
 msgid "created at"
 msgstr "létrehozva"
 
-#: tasks/models.py:74 tasks/templates/index.html:12
+#: tasks/models.py:98 tasks/templates/index.html:14
 #: tasks/templates/tasks/detail.html:21
 msgid "status"
 msgstr "állapot"
 
-#: tasks/models.py:78 tasks/templates/index.html:14
+#: tasks/models.py:102 tasks/templates/index.html:16
 #: tasks/templates/tasks/detail.html:29
 msgid "priority"
 msgstr "prioritás"
 
-#: tasks/models.py:87 tasks/templates/index.html:13
+#: tasks/models.py:111 tasks/templates/index.html:15
 #: tasks/templates/tasks/detail.html:53
 msgid "assignee"
 msgstr "felelős"
 
-#: tasks/models.py:91
+#: tasks/models.py:115
 msgid "task"
 msgstr "feladat"
 
-#: tasks/models.py:92 tasks/templates/base.html:19
+#: tasks/models.py:116 tasks/templates/base.html:19
 msgid "tasks"
 msgstr "feladatok"
 
-#: tasks/models.py:100 tasks/models.py:118
+#: tasks/models.py:124 tasks/models.py:142
 msgid "notes"
 msgstr "megjegyzések"
 
-#: tasks/models.py:103
+#: tasks/models.py:127
 msgid "body"
 msgstr "megjegyzés"
 
-#: tasks/models.py:113
+#: tasks/models.py:137
 msgid "author"
 msgstr "szerző"
 
-#: tasks/models.py:117
+#: tasks/models.py:141
 msgid "note"
 msgstr "megjegyzés"
 
@@ -132,6 +152,32 @@ msgstr "kilépés"
 msgid "New task"
 msgstr "Új feladat"
 
+#: tasks/templates/index.html:44
+#, python-format
+msgid ""
+"\n"
+"    No tasks were found.\n"
+"    Try removing some filters or <a href=\"%(clear_link)s\">clear all</a> of "
+"them.\n"
+"  "
+msgstr ""
+"\n"
+"    Nincs találat.\n"
+"    Próbálj meg pár szűrőt törölni, vagy  <a href=\"%(clear_link)s\">töröld "
+"az mindet</a>."
+
+#: tasks/templates/index.html:52
+#, python-format
+msgid ""
+"\n"
+"    No tasks were found.\n"
+"    <a href=\"%(new_task_link)s\">Create one</a>!\n"
+"  "
+msgstr ""
+"\n"
+"    Nem találtunk egyetlen feladatot sem.\n"
+"    <a href=\"%(new_task_link)s\">Hozz létre egyet</a>!"
+
 #: tasks/templates/notes/edit.html:3 tasks/templates/notes/edit.html:6
 msgid "Editing note"
 msgstr "Megjegyzés szerkesztése"
@@ -145,6 +191,14 @@ msgstr "Mégsem"
 #: tasks/templates/tasks/new.html:23
 msgid "Save"
 msgstr "Mentés"
+
+#: tasks/templates/task_filter_form.html:32
+msgid "Clear all"
+msgstr "Mindet töröl"
+
+#: tasks/templates/task_filter_form.html:36
+msgid "Filter"
+msgstr "Szűrés"
 
 #: tasks/templates/tasks/detail.html:64
 msgid "Duplicate"

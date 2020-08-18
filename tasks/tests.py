@@ -83,6 +83,31 @@ class ViewsTests(TestCase):
         self.assertContains(response, "Test Project")
         self.assertContains(response, "LOW")
 
+    def test_index_filter(self):
+        """Tasks can be filtered by project"""
+
+        User.objects.create_user("testuser", password="test")
+
+        project1 = Project(title="Test Project 1")
+        project1.save()
+        task1 = Task(project=project1, title="Test Task 1", priority=-1)
+        task1.save()
+        project2 = Project(title="Test Project 2")
+        project2.save()
+        task2 = Task(project=project2, title="Test Task 2", priority=-1)
+        task2.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        response = client.get(f"/?project={project1.id}")
+        self.assertInHTML(
+            f"<option value='{project1.id}' selected>Test Project 1</option>",
+            str(response.content),
+        )
+        self.assertContains(response, "Test Task 1")
+        self.assertNotContains(response, "Test Task 2")
+
     def test_new_unauthenticated(self):
         """New task form redirects to login when unauthenticated"""
 

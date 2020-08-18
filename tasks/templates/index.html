@@ -4,6 +4,8 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
+{% include "task_filter_form.html" %}
+
 <table class="table table-striped my-4">
   <thead>
     <tr>
@@ -16,7 +18,7 @@
       <th scope="col">{% trans "created at"|title %}</th>
     </tr>
   </thead>
-  <tboby>
+  <tbody>
     {% for task in tasks %}
       <tr>
         <td>{{task.project}}</td>
@@ -34,5 +36,25 @@
     {% endfor %}
   </tbody>
 </table>
+
+{% if not tasks %}
+{% if has_filter %}
+<div class="alert alert-primary" role="alert">
+  {% url 'index' as clear_link %}
+  {% blocktranslate %}
+    No tasks were found.
+    Try removing some filters or <a href="{{ clear_link }}">clear all</a> of them.
+  {% endblocktranslate %}
+</div>
+{% else %}
+<div class="alert alert-primary" role="alert">
+  {% url 'new' as new_task_link %}
+  {% blocktranslate %}
+    No tasks were found.
+    <a href="{{ new_task_link }}">Create one</a>!
+  {% endblocktranslate %}
+</div>
+{% endif %}
+{% endif %}
 
 {% endblock %}

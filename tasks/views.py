@@ -1,16 +1,43 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from .forms.new_task_form import NewTaskForm
 from .forms.note_form import NoteForm
-from .models import Task, Note
+from .forms.task_filter_form import TaskFilterForm
+from .models import Task, Note, Project
 
 
 @login_required
 def index(request):
-    tasks = Task.objects.sorted_for_dashboard().all()
-    return render(request, "index.html", {"user": request.user, "tasks": tasks})
+    project_choices = [(project.id, str(project)) for project in Project.objects.all()]
+    assignee_choices = [(user.id, str(user)) for user in User.objects.all()]
+    form = TaskFilterForm(
+        request.GET, project_choices=project_choices, assignee_choices=assignee_choices
+    )
+
+    # Warning: form.is_valid() has the side-effect of populating form.cleaned_data
+    form.is_valid()
+
+    tasks = Task.objects.sorted_for_dashboard(
+        project=form.cleaned_data.get("project"),
+        due_date_before=form.cleaned_data.get("due_date_before"),
+        due_date_after=form.cleaned_data.get("due_date_after"),
+        status=form.cleaned_data.get("status"),
+        assignee=form.cleaned_data.get("assignee"),
+    ).all()
+
+    has_filter = (
+        next((k for (k, v) in form.cleaned_data.items() if v is not None), None)
+        is not None
+    )
+
+    return render(
+        request,
+        "index.html",
+        {"user": request.user, "tasks": tasks, "form": form, "has_filter": has_filter},
+    )
 
 
 @login_required

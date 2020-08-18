@@ -1,0 +1,40 @@
+{% load i18n %}
+
+<form action="{% url 'index' %}" class="form">
+    <div class="form-row">
+        <div class="form-group col-auto col-sm-4 col-lg">
+            {{ form.project.label_tag }}
+            {{ form.project }}
+        </div>
+
+        <div class="form-group col-auto col-sm-4 col-lg">
+            {{ form.due_date_after.label_tag }}
+            {{ form.due_date_after }}
+        </div>
+
+        <div class="form-group col-auto col-sm-4 col-lg">
+            {{ form.due_date_before.label_tag }}
+            {{ form.due_date_before }}
+        </div>
+
+        <div class="form-group col-auto col-sm-4 col-lg">
+            {{ form.status.label_tag }}
+            {{ form.status }}
+        </div>
+
+        <div class="form-group col-auto col-sm-4 col-lg">
+            {{ form.assignee.label_tag }}
+            {{ form.assignee }}
+        </div>
+
+        <div class="form-group col-auto col-sm-4 col-lg d-flex align-items-end">
+            <a href="{% url 'index' %}" class="btn btn-sm btn-link text-nowrap mr-2">
+                {% translate "Clear all" %}
+            </a>
+
+            <button class="btn btn-sm btn-secondary">
+                {% translate "Filter" %}
+            </button>
+        </div>
+    </div>
+</form>
