@@ -20,6 +20,12 @@ def index(request):
     # Warning: form.is_valid() has the side-effect of populating form.cleaned_data
     form.is_valid()
 
+    if "previous_due_date" in request.GET:
+        form.previous_due_date()
+
+    elif "next_due_date" in request.GET:
+        form.next_due_date()
+
     tasks = Task.objects.sorted_for_dashboard(
         project=form.cleaned_data.get("project"),
         due_date_before=form.cleaned_data.get("due_date_before"),

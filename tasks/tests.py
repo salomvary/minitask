@@ -1,7 +1,68 @@
+from datetime import date
+
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
-from .models import Task, Project, Note
+from .forms.task_filter_form import TaskFilterForm
+from .models import Note, Project, Task
+
+
+class FormTests(TestCase):
+    def test_previous_due_date(self):
+        form = TaskFilterForm(
+            # A 6 day interval, both ends inclusive
+            {"due_date_after": "2020-01-15", "due_date_before": "2020-01-20"}
+        )
+        form.is_valid()
+        form.previous_due_date()
+        # The previous 6 day interval
+        self.assertEqual(form.data["due_date_after"], "2020-01-09")
+        self.assertEqual(form.data["due_date_before"], "2020-01-14")
+        self.assertEqual(
+            form.cleaned_data["due_date_after"], date.fromisoformat("2020-01-09")
+        )
+        self.assertEqual(
+            form.cleaned_data["due_date_before"], date.fromisoformat("2020-01-14")
+        )
+
+    def test_previous_due_date_months(self):
+        form = TaskFilterForm(
+            # An interval spanning two full months
+            {"due_date_after": "2020-03-01", "due_date_before": "2020-04-30"}
+        )
+        form.is_valid()
+        form.previous_due_date()
+        # The previous two months interval
+        self.assertEqual(form.data["due_date_after"], "2020-01-01")
+        self.assertEqual(form.data["due_date_before"], "2020-02-29")
+
+    def test_previous_due_date_one_month(self):
+        form = TaskFilterForm(
+            # An interval spanning one full month
+            {"due_date_after": "2020-04-01", "due_date_before": "2020-04-30"}
+        )
+        form.is_valid()
+        form.previous_due_date()
+        # The previous one month interval
+        self.assertEqual(form.data["due_date_after"], "2020-03-01")
+        self.assertEqual(form.data["due_date_before"], "2020-03-31")
+
+    def test_next_due_date(self):
+        form = TaskFilterForm(
+            # A 6 day interval, both ends inclusive
+            {"due_date_after": "2020-01-15", "due_date_before": "2020-01-20"}
+        )
+        form.is_valid()
+        form.next_due_date()
+        # The previous 6 day interval
+        self.assertEqual(form.data["due_date_after"], "2020-01-21")
+        self.assertEqual(form.data["due_date_before"], "2020-01-26")
+        self.assertEqual(
+            form.cleaned_data["due_date_after"], date.fromisoformat("2020-01-21")
+        )
+        self.assertEqual(
+            form.cleaned_data["due_date_before"], date.fromisoformat("2020-01-26")
+        )
 
 
 class ModelTests(TestCase):
