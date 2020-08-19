@@ -192,11 +192,21 @@ msgstr "Mégsem"
 msgid "Save"
 msgstr "Mentés"
 
-#: tasks/templates/task_filter_form.html:32
+#: tasks/templates/task_filter_form.html:19
+#: tasks/templates/task_filter_form.html:20
+msgid "Previous interval"
+msgstr "Előző időszak"
+
+#: tasks/templates/task_filter_form.html:39
+#: tasks/templates/task_filter_form.html:40
+msgid "Next interval"
+msgstr "Következő időszak"
+
+#: tasks/templates/task_filter_form.html:60
 msgid "Clear all"
 msgstr "Mindet töröl"
 
-#: tasks/templates/task_filter_form.html:36
+#: tasks/templates/task_filter_form.html:64
 msgid "Filter"
 msgstr "Szűrés"
 
