@@ -13,6 +13,7 @@ class ProjectQuerySet(models.QuerySet):
     def visible_to_user(self, user):
         """Filter for projects visible to the user"""
 
+        # FIXME: de-duplicate this filter
         if user.is_superuser:
             return self
         else:
@@ -132,6 +133,7 @@ class TaskQuerySet(models.QuerySet):
     def visible_to_user(self, user):
         """Filter for tasks visible to the user"""
 
+        # FIXME: de-duplicate this filter
         if user.is_superuser:
             return self
         else:
@@ -204,7 +206,31 @@ class Task(models.Model):
         return self.title
 
 
+class NoteQuerySet(models.QuerySet):
+    """Queries for the Note model"""
+
+    def visible_to_user(self, user):
+        """Filter for notes visible to the user"""
+
+        # FIXME: de-duplicate this filter
+        if user.is_superuser:
+            return self
+        else:
+            return self.filter(
+                Q(task__project__membership__user=user)
+                & (
+                    Q(task__project__membership__expires_at__isnull=True)
+                    | Q(task__project__membership__expires_at__gte=datetime.now())
+                )
+            )
+
+
+NoteManager = models.Manager.from_queryset(NoteQuerySet)
+
+
 class Note(models.Model):
+    objects = NoteManager()
+
     task = models.ForeignKey(
         Task, on_delete=models.CASCADE, related_name="notes", verbose_name=_("notes"),
     )

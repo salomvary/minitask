@@ -1,12 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db import transaction
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from .forms.new_task_form import NewTaskForm
 from .forms.note_form import NoteForm
 from .forms.task_filter_form import TaskFilterForm
-from .models import Task, Note, Project
+from .models import Note, Project, Task
 
 
 @login_required
@@ -56,20 +59,24 @@ def index(request):
 
 @login_required
 def new_task(request):
-    form = NewTaskForm()
+    projects = Project.objects.visible_to_user(request.user)
+    project_choices = [(project.id, str(project)) for project in projects]
+    form = NewTaskForm(project_choices=project_choices)
     return render(request, "tasks/new.html", {"user": request.user, "form": form})
 
 
 @login_required
 def copy_task(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    form = NewTaskForm(None, instance=task)
+    task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
+    projects = Project.objects.visible_to_user(request.user)
+    project_choices = [(project.id, str(project)) for project in projects]
+    form = NewTaskForm(None, instance=task, project_choices=project_choices)
     return render(request, "tasks/new.html", {"user": request.user, "form": form})
 
 
 @login_required
 def task_detail(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
+    task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
     note_form = NoteForm(request.POST)
     return render(
         request,
@@ -80,8 +87,12 @@ def task_detail(request, task_id):
 
 @login_required
 def edit_task(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    form = NewTaskForm(request.POST or None, instance=task)
+    task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
+    projects = Project.objects.visible_to_user(request.user)
+    project_choices = [(project.id, str(project)) for project in projects]
+    form = NewTaskForm(
+        request.POST or None, instance=task, project_choices=project_choices
+    )
 
     if request.method == "POST":
         if form.is_valid():
@@ -109,17 +120,28 @@ def edit_task(request, task_id):
 
 
 @login_required
+@transaction.atomic
 def create_task(request):
-    form = NewTaskForm(request.POST)
+    projects = Project.objects.visible_to_user(request.user)
+    project_choices = [(project.id, str(project)) for project in projects]
+    form = NewTaskForm(request.POST, project_choices=project_choices)
     if form.is_valid():
-        task = form.save()
-        action = request.POST.get("action")
-        if action == "copy":
-            return redirect("copy", task.id)
-        elif action == "new":
-            return redirect("new")
+        project = (
+            Project.objects.visible_to_user(request.user)
+            .filter(id=form.cleaned_data["project"].id)
+            .first()
+        )
+        if project:
+            task = form.save()
+            action = request.POST.get("action")
+            if action == "copy":
+                return redirect("copy", task.id)
+            elif action == "new":
+                return redirect("new")
+            else:
+                return redirect("detail", task.id)
         else:
-            return redirect("detail", task.id)
+            raise Http404(_("The project you tried to create a task for was not found"))
     else:
         return render(
             request, "tasks/new.html", {"user": request.user, "form": form}, status=400
@@ -128,7 +150,7 @@ def create_task(request):
 
 @login_required
 def edit_note(request, note_id):
-    note = get_object_or_404(Note, pk=note_id)
+    note = get_object_or_404(Note.objects.visible_to_user(request.user), pk=note_id)
     form = NoteForm(request.POST or None, instance=note)
     if request.method == "POST":
         if form.is_valid():
@@ -155,7 +177,7 @@ def edit_note(request, note_id):
 
 @login_required
 def create_note(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
+    task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
     form = NoteForm(request.POST)
     if request.method == "POST":
         if form.is_valid():

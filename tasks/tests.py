@@ -275,6 +275,91 @@ class ViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "New task")
 
+    def test_new_visible_projects(self):
+        """New task form only contains visible projects"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project1 = Project(title="Visible Project")
+        project1.save()
+        project1.members.add(user)
+
+        project2 = Project(title="Hidden Project")
+        project2.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get("/tasks/new")
+
+        self.assertContains(response, "Visible Project")
+        self.assertNotContains(response, "Hidden Project")
+
+    def test_copy(self):
+        """Copy task form is rendered"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        project.members.add(user)
+        task = Task(project=project, title="Test Task", priority=2)
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get(f"/tasks/{task.id}/copy")
+
+        self.assertContains(response, "Test Task", status_code=200)
+
+    def test_copy_not_found(self):
+        """Copy task form is not shown if the task to copy does not exist"""
+
+        User.objects.create_user("testuser", password="test")
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get("/tasks/1/copy")
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_copy_not_member(self):
+        """Copy task form is not shown if user is not member"""
+
+        User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get(f"/tasks/{task.id}/copy")
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_copy_visible_projects(self):
+        """Copy task form only contains visible projects"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project1 = Project(title="Visible Project")
+        project1.save()
+        project1.members.add(user)
+
+        project2 = Project(title="Hidden Project")
+        project2.save()
+
+        task = Task(project=project1, title="Test Task")
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get(f"/tasks/{task.id}/copy")
+
+        self.assertContains(response, "Visible Project")
+        self.assertNotContains(response, "Hidden Project")
+
     def test_create_unauthenticated(self):
         """Creating task redirects to login when unauthenticated"""
 
@@ -285,10 +370,11 @@ class ViewsTests(TestCase):
     def test_create(self):
         """New task is created"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
+        project.members.add(user)
 
         client = Client()
         client.login(username="testuser", password="test")
@@ -308,6 +394,47 @@ class ViewsTests(TestCase):
         self.assertEqual(task.project, project)
         self.assertEqual(task.priority, 2)
 
+    def test_create_not_member(self):
+        """New task is not created for a project the user is not member in"""
+
+        User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post(
+            "/tasks",
+            {
+                "project": project.id,
+                "title": "Test Task",
+                "status": "open",
+                "priority": 2,
+            },
+        )
+
+        self.assertEqual(response.status_code, 404)
+        tasks = Task.objects.all()
+        self.assertEqual(list(tasks), [])
+
+    def test_create_project_not_found(self):
+        """New task is not created for a project that does not exist"""
+
+        User.objects.create_user("testuser", password="test")
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post(
+            "/tasks",
+            {"project": 1, "title": "Test Task", "status": "open", "priority": 2,},
+        )
+
+        # Should actually be 404 but anything that's not success is fine for now
+        self.assertEqual(response.status_code, 400)
+        tasks = Task.objects.all()
+        self.assertEqual(list(tasks), [])
+
     def test_detail_unauthenticated(self):
         """Task detail redirects to login when unauthenticated"""
 
@@ -318,10 +445,11 @@ class ViewsTests(TestCase):
     def test_detail(self):
         """Task details are rendered"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
+        project.members.add(user)
         task = Task(project=project, title="Test Task", priority=2)
         task.save()
 
@@ -333,6 +461,22 @@ class ViewsTests(TestCase):
         self.assertContains(response, "Test Task")
         self.assertContains(response, "HIGHEST")
 
+    def test_detail_not_member(self):
+        """Task details are rendered"""
+
+        User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get("/tasks/" + str(task.id))
+
+        self.assertEqual(response.status_code, 404)
+
     def test_edit_unauthenticated(self):
         """Task edit redirects to login when unauthenticated"""
 
@@ -342,6 +486,47 @@ class ViewsTests(TestCase):
 
     def test_edit(self):
         """Task edit form is rendered"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        project.members.add(user)
+        task = Task(project=project, title="Test Task", priority=2)
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get("/tasks/" + str(task.id) + "/edit")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Test Task")
+        self.assertContains(response, "highest")
+
+    def test_edit_visible_projects(self):
+        """Task edit form only contains projects visible to the user"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project1 = Project(title="Visible Project")
+        project1.save()
+        project1.members.add(user)
+
+        project2 = Project(title="Hidden Project")
+        project2.save()
+
+        task = Task(project=project1, title="Test Task", priority=2)
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get("/tasks/" + str(task.id) + "/edit")
+
+        self.assertContains(response, "Visible Project")
+        self.assertNotContains(response, "Hidden Project")
+
+    def test_edit_not_member(self):
+        """Task edit form is not rendered if the user is not project member"""
 
         User.objects.create_user("testuser", password="test")
 
@@ -354,17 +539,16 @@ class ViewsTests(TestCase):
         client.login(username="testuser", password="test")
         response = client.get("/tasks/" + str(task.id) + "/edit")
 
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Test Task")
-        self.assertContains(response, "highest")
+        self.assertEqual(response.status_code, 404)
 
     def test_edit_post(self):
         """Task is updated"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
+        project.members.add(user)
         task = Task(project=project, title="Test Task")
         task.save()
 
@@ -388,10 +572,11 @@ class ViewsTests(TestCase):
     def test_edit_post_not_valid(self):
         """Task is updated"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
+        project.members.add(user)
         task = Task(project=project, title="Test Task")
         task.save()
 
@@ -429,10 +614,11 @@ class ViewsTests(TestCase):
     def test_create_note_not_valid(self):
         """No new note is created with invalid form data"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
+        project.members.add(user)
 
         task = Task(project=project, title="Test Task")
         task.save()
@@ -451,6 +637,7 @@ class ViewsTests(TestCase):
 
         project = Project(title="Test Project")
         project.save()
+        project.members.add(user)
 
         task = Task(project=project, title="Test Task")
         task.save()
@@ -469,6 +656,27 @@ class ViewsTests(TestCase):
         self.assertEqual(note.task, task)
         self.assertEqual(note.author, user)
 
+    def test_create_note_not_member(self):
+        """New note is not created if the user is not project member"""
+
+        User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post(
+            "/tasks/" + str(task.id) + "/note", {"body": "Test Note"}
+        )
+
+        self.assertEqual(response.status_code, 404)
+        note = Note.objects.all()
+        self.assertEqual(list(note), [])
+
     def test_edit_note_unauthenticated(self):
         """Note edit form redirects to login when unauthenticated"""
 
@@ -478,6 +686,27 @@ class ViewsTests(TestCase):
 
     def test_edit_note(self):
         """Note edit form is rendered"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        project.members.add(user)
+
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        note = Note(task=task, body="Test note")
+        note.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get(f"/notes/{note.id}/edit")
+
+        self.assertContains(response, "Test note", status_code=200)
+
+    def test_edit_note_not_member(self):
+        """Note edit form is not rendered if the user is not project member"""
 
         User.objects.create_user("testuser", password="test")
 
@@ -494,15 +723,16 @@ class ViewsTests(TestCase):
         client.login(username="testuser", password="test")
         response = client.get(f"/notes/{note.id}/edit")
 
-        self.assertContains(response, "Test note", status_code=200)
+        self.assertEqual(response.status_code, 404)
 
     def test_edit_note_post(self):
         """Note is updated"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
+        project.members.add(user)
 
         task = Task(project=project, title="Test Task")
         task.save()
@@ -520,3 +750,23 @@ class ViewsTests(TestCase):
 
         note = Note.objects.get(pk=note.id)
         self.assertEqual(note.body, "New test note")
+
+    def test_edit_note_post_not_member(self):
+        """Note is not updated if the user is not project member"""
+
+        User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        note = Note(task=task, body="Test note")
+        note.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post(f"/notes/{note.id}/edit", {"body": "New test note"})
+
+        self.assertEqual(response.status_code, 404)
