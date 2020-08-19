@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext
 
 
 class Project(models.Model):
@@ -15,12 +16,38 @@ class Project(models.Model):
         verbose_name=_("owner"),
     )
 
+    members = models.ManyToManyField(User, through="ProjectMembership")
+
     class Meta:
         verbose_name = _("project")
         verbose_name_plural = _("projects")
 
     def __str__(self):
         return self.title
+
+
+class ProjectMembership(models.Model):
+    """Represents users participating on a project"""
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    expires_at = models.DateField(_("expires at"), null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("project membership")
+        verbose_name_plural = _("project memberships")
+
+    def __str__(self):
+        if self.expires_at:
+            expires_at = _("until %(expires_at)s" % {"expires_at": self.expires_at})
+        else:
+            expires_at = _("forever")
+
+        # TODO figure out why this is still English on the Admin
+        return gettext(
+            "'%(user)s' member of '%(project)s' project %(expires_at)s"
+            % {"user": self.user, "project": self.project, "expires_at": expires_at,}
+        )
 
 
 class TaskManager(models.Manager):
