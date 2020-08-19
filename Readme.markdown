@@ -1,14 +1,51 @@
+# Minitask
+
+Minitask is rather simple project management application for the web.
+It is not much more than a multi-user to-do list. It does not try to be
+beautiful, it tries to be simple both on terms of underlying technology
+and user experience.
+
+If you need 0.5% of Jira's functionality, Minitask is a great alternative.
+
+Minitask is currently only available for self-hosting, which means you have
+to deploy it to your own infrastructure or to the cloud. If you are interested
+in paying for a hosted version,
+[get in touch](mailto:marton@salomvary.com?subject=Minitask%20hosting).
+
+The user interface is not only available in English but also Hungarian.
+Other languages can easily be added. If you are interested in translating
+Minitask into your language,
+[let me know](mailto:marton@salomvary.com?subject=Minitask%20translation)!
+
+## Project status
+
+As of August 2020 the project is under active development and is **not yet
+considered to be stable**.
+
+## Screenshots
+
+![Screenshot of Minitask](screenshot.png)
+
+## Demo
+
+- https://minitask.herokuapp.com/
+- Username: demo
+- Password: Demodemo1
+
 ## Development
+
+Minitask is a [Django](https://www.djangoproject.com/) application. If you want to
+make changes or fix bugs, follow the instructions below.
 
 Requirements:
 
-- Python 3.8
-- Poetry
+- [Python 3.8](https://www.python.org/downloads/)
+- [Poetry](https://python-poetry.org/)
 
 First time setup:
 
-- `poetry install`
-- `poetry run python manage.py migrate`
+    poetry install
+    poetry run python manage.py migrate
 
 Running the development server:
 
@@ -30,9 +67,13 @@ Working with translations:
     # Edit tasks/locale/hu/LC_MESSAGES/django.po
     poetry run django-admin compilemessages
 
+## Deployment
 
+Django has excellent [documentation on deploying applications to production](https://docs.djangoproject.com/en/3.1/howto/deployment/). Below are a few concrete examples.
 
-## Running on Ubuntu LTS
+### Running on Ubuntu LTS
+
+⚠️ This section is heavily work-in-progress.
 
     # Extract project to /opt/minitask
     cd /opt/minitask
@@ -43,7 +84,10 @@ Working with translations:
 The application should be listening at http://hostname:8000.
 
 
-## Deploying to Heroku
+### Deploying to Heroku
+
+[Heroku](https://www.heroku.com/) is one of the easiest cloud platform to deploy to.
+If you are not familiar with Heroku [start here](https://devcenter.heroku.com/articles/getting-started-with-python). Minitask works fine on a free Heroku account.
 
     heroku create my-tasks
     heroku addons:create heroku-postgresql:hobby-dev
