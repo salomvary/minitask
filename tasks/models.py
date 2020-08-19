@@ -68,7 +68,14 @@ class TaskQuerySet(models.QuerySet):
         end)
     """
 
-    def sorted_for_dashboard(
+    def sorted_for_dashboard(self):
+        """Default sorting order for the dashboard"""
+
+        return self.extra(select={"status_order": self.CASE_SQL}).order_by(
+            "-status_order", models.F("due_date").asc(nulls_last=True), "-priority"
+        )
+
+    def filtered_by(
         self,
         project=None,
         due_date_before=None,
@@ -76,11 +83,11 @@ class TaskQuerySet(models.QuerySet):
         status=None,
         assignee=None,
     ):
+        """Filter by user provided field values"""
+
         # TODO: Optimize these filters into one:
         # https://djangotricks.blogspot.com/2018/05/queryset-filters-on-many-to-many-relations.html
-        query = self.extra(select={"status_order": self.CASE_SQL}).order_by(
-            "-status_order", models.F("due_date").asc(nulls_last=True), "-priority"
-        )
+        query = self
 
         if project is not None:
             query = query.filter(project=project)
@@ -99,7 +106,7 @@ class TaskQuerySet(models.QuerySet):
 
         return query
 
-    def filtered_for_user(self, user):
+    def visible_to_user(self, user):
         """Filter for tasks visible to the user"""
 
         if user.is_superuser:

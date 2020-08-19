@@ -27,14 +27,15 @@ def index(request):
         form.next_due_date()
 
     tasks = (
-        Task.objects.sorted_for_dashboard(
+        Task.objects.visible_to_user(request.user)
+        .filtered_by(
             project=form.cleaned_data.get("project"),
             due_date_before=form.cleaned_data.get("due_date_before"),
             due_date_after=form.cleaned_data.get("due_date_after"),
             status=form.cleaned_data.get("status"),
             assignee=form.cleaned_data.get("assignee"),
         )
-        .filtered_for_user(request.user)
+        .sorted_for_dashboard()
         .all()
     )
 

@@ -133,7 +133,7 @@ class ModelTests(TestCase):
         hidden_task = Task(project=hidden_project, title="Hidden Task")
         hidden_task.save()
 
-        tasks = Task.objects.sorted_for_dashboard().filtered_for_user(user).all()
+        tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
         self.assertEqual(list(tasks), [visible_task])
 
     def test_tasks_not_yet_expired_membership(self):
@@ -150,7 +150,7 @@ class ModelTests(TestCase):
         task = Task(project=project, title="Test Task")
         task.save()
 
-        tasks = Task.objects.sorted_for_dashboard().filtered_for_user(user).all()
+        tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
         self.assertEqual(list(tasks), [task])
 
     def test_tasks_expired_membership(self):
@@ -167,7 +167,7 @@ class ModelTests(TestCase):
         task = Task(project=project, title="Test Task")
         task.save()
 
-        tasks = Task.objects.sorted_for_dashboard().filtered_for_user(user).all()
+        tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
         self.assertEqual(list(tasks), [])
 
     def test_tasks_superusers_see_all(self):
@@ -181,7 +181,7 @@ class ModelTests(TestCase):
         task = Task(project=project, title="Test Task")
         task.save()
 
-        tasks = Task.objects.sorted_for_dashboard().filtered_for_user(user).all()
+        tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
         self.assertEqual(list(tasks), [task])
 
 
