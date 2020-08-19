@@ -34,15 +34,6 @@ class Project(models.Model):
 
     title = models.CharField(_("title"), max_length=500)
 
-    owner = models.ForeignKey(
-        User,
-        on_delete=models.DO_NOTHING,
-        blank=True,
-        null=True,
-        related_name="owner",
-        verbose_name=_("owner"),
-    )
-
     members = models.ManyToManyField(User, through="ProjectMembership")
 
     class Meta:
