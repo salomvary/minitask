@@ -88,6 +88,7 @@ ALLOWED_HOSTS = [os.environ["ALLOWED_HOSTS"]] if "ALLOWED_HOSTS" in os.environ e
 
 INSTALLED_APPS = [
     "tasks.apps.TasksConfig",
+    "auth.apps.AuthConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -198,4 +199,4 @@ if os.environ.get("SERVE_STATIC", False):
     # Enable GZip.
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-LOGIN_URL = "/admin/login/"
+LOGIN_URL = "/accounts/login/"

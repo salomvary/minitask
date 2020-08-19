@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Log in" %}{% endblock %}
+{% block content %}
+
+<form
+    action="{% url 'login' %}"
+    method="post"
+    class="row justify-content-center align-items-center"
+    style="min-height: calc(100vh - 56px - 2rem)"
+>
+    <div class="card col col-auto col-lg-3">
+        {% csrf_token %}
+        <h2 class="text-center my-3">{% translate "Log in" %}</h2>
+
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            {% translate "Your username and password didn't match. Please try again." %}
+        </div>
+        {% endif %}
+
+        {% if next %}
+            {% if user.is_authenticated %}
+            <div class="alert alert-primary" role="alert">
+             {% translate "Your account doesn't have access to this page. To proceed,
+            please login with an account that has access." %}</p>
+            </div>
+            {% else %}
+            {% comment %} <div class="alert alert-primary" role="alert">
+            {% translate "Please login to see this page." %}
+            </div> {% endcomment %}
+            {% endif %}
+        {% endif %}
+
+        <div class="form-group">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </div>
+
+        <div class="form-group">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+        </div>
+
+        <div class="form-group">
+            <button type="submit" value="login" class="btn btn-primary btn-block">
+                {% translate "Log in" %}
+            </button>
+        </div>
+
+        <input type="hidden" name="next" value="{{ next }}">
+    </div>
+</form>
+
+
+{% endblock %}
