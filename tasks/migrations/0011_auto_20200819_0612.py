@@ -9,26 +9,47 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tasks', '0010_task_priority'),
+        ("tasks", "0010_task_priority"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ProjectMembership',
+            name="ProjectMembership",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('expires_at', models.DateField(verbose_name='expires at')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tasks.project')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("expires_at", models.DateField(verbose_name="expires at")),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="tasks.project"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'project membership',
-                'verbose_name_plural': 'project memberships',
+                "verbose_name": "project membership",
+                "verbose_name_plural": "project memberships",
             },
         ),
         migrations.AddField(
-            model_name='project',
-            name='members',
-            field=models.ManyToManyField(through='tasks.ProjectMembership', to=settings.AUTH_USER_MODEL),
+            model_name="project",
+            name="members",
+            field=models.ManyToManyField(
+                through="tasks.ProjectMembership", to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

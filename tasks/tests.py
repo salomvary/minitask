@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta, datetime
 
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
@@ -116,6 +116,74 @@ class ModelTests(TestCase):
         tasks = Task.objects.sorted_for_dashboard().all()
         self.assertEqual(list(tasks), [high_task, normal_task, low_task])
 
+    def test_tasks_only_for_members(self):
+        """Ordinary users only see tasks on projects they are members"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        visible_project = Project(title="Visible Project")
+        visible_project.save()
+        visible_project.members.add(user)
+
+        hidden_project = Project(title="Hidden Project")
+        hidden_project.save()
+
+        visible_task = Task(project=visible_project, title="Visible Task")
+        visible_task.save()
+        hidden_task = Task(project=hidden_project, title="Hidden Task")
+        hidden_task.save()
+
+        tasks = Task.objects.sorted_for_dashboard().filtered_for_user(user).all()
+        self.assertEqual(list(tasks), [visible_task])
+
+    def test_tasks_not_yet_expired_membership(self):
+        """Members see tasks on projects where their membership has not yet expired"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+
+        tomorrow = datetime.now() + timedelta(days=1)
+        project.members.add(user, through_defaults={"expires_at": tomorrow})
+
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        tasks = Task.objects.sorted_for_dashboard().filtered_for_user(user).all()
+        self.assertEqual(list(tasks), [task])
+
+    def test_tasks_expired_membership(self):
+        """Members don't see tasks on projects where their membership has expired"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+
+        yesterday = datetime.now() - timedelta(days=1)
+        project.members.add(user, through_defaults={"expires_at": yesterday})
+
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        tasks = Task.objects.sorted_for_dashboard().filtered_for_user(user).all()
+        self.assertEqual(list(tasks), [])
+
+    def test_tasks_superusers_see_all(self):
+        """Superusers see all tasks"""
+
+        user = User.objects.create_user("testuser", password="test", is_superuser=True)
+
+        project = Project(title="Test Project")
+        project.save()
+
+        task = Task(project=project, title="Test Task")
+        task.save()
+
+        tasks = Task.objects.sorted_for_dashboard().filtered_for_user(user).all()
+        self.assertEqual(list(tasks), [task])
+
 
 class ViewsTests(TestCase):
     def test_index_unauthenticated(self):
@@ -128,7 +196,7 @@ class ViewsTests(TestCase):
     def test_index(self):
         """Index lists tasks"""
 
-        User.objects.create_user("testuser", password="test")
+        User.objects.create_user("testuser", password="test", is_superuser=True)
 
         project = Project(title="Test Project")
         project.save()
@@ -147,7 +215,7 @@ class ViewsTests(TestCase):
     def test_index_filter(self):
         """Tasks can be filtered by project"""
 
-        User.objects.create_user("testuser", password="test")
+        User.objects.create_user("testuser", password="test", is_superuser=True)
 
         project1 = Project(title="Test Project 1")
         project1.save()

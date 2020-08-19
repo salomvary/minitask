@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tasks', '0012_auto_20200819_0614'),
+        ("tasks", "0012_auto_20200819_0614"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='projectmembership',
-            name='expires_at',
-            field=models.DateField(blank=True, null=True, verbose_name='expires at'),
+            model_name="projectmembership",
+            name="expires_at",
+            field=models.DateField(blank=True, null=True, verbose_name="expires at"),
         ),
     ]

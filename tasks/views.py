@@ -26,13 +26,17 @@ def index(request):
     elif "next_due_date" in request.GET:
         form.next_due_date()
 
-    tasks = Task.objects.sorted_for_dashboard(
-        project=form.cleaned_data.get("project"),
-        due_date_before=form.cleaned_data.get("due_date_before"),
-        due_date_after=form.cleaned_data.get("due_date_after"),
-        status=form.cleaned_data.get("status"),
-        assignee=form.cleaned_data.get("assignee"),
-    ).all()
+    tasks = (
+        Task.objects.sorted_for_dashboard(
+            project=form.cleaned_data.get("project"),
+            due_date_before=form.cleaned_data.get("due_date_before"),
+            due_date_after=form.cleaned_data.get("due_date_after"),
+            status=form.cleaned_data.get("status"),
+            assignee=form.cleaned_data.get("assignee"),
+        )
+        .filtered_for_user(request.user)
+        .all()
+    )
 
     has_filter = (
         next((k for (k, v) in form.cleaned_data.items() if v is not None), None)

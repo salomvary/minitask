@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
 from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
 
 class Project(models.Model):
@@ -29,8 +32,10 @@ class Project(models.Model):
 class ProjectMembership(models.Model):
     """Represents users participating on a project"""
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="membership", on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project, related_name="membership", on_delete=models.CASCADE
+    )
     expires_at = models.DateField(_("expires at"), null=True, blank=True)
 
     class Meta:
@@ -50,7 +55,11 @@ class ProjectMembership(models.Model):
         )
 
 
-class TaskManager(models.Manager):
+class TaskQuerySet(models.QuerySet):
+    """Queries for the Task model"""
+
+    # TODO: use Django's Case/When:
+    #  https://docs.djangoproject.com/en/3.1/ref/models/conditional-expressions/#case
     CASE_SQL = """
         (case
             when status='done' then 1
@@ -67,6 +76,8 @@ class TaskManager(models.Manager):
         status=None,
         assignee=None,
     ):
+        # TODO: Optimize these filters into one:
+        # https://djangotricks.blogspot.com/2018/05/queryset-filters-on-many-to-many-relations.html
         query = self.extra(select={"status_order": self.CASE_SQL}).order_by(
             "-status_order", models.F("due_date").asc(nulls_last=True), "-priority"
         )
@@ -87,6 +98,23 @@ class TaskManager(models.Manager):
             query = query.filter(assignee=assignee)
 
         return query
+
+    def filtered_for_user(self, user):
+        """Filter for tasks visible to the user"""
+
+        if user.is_superuser:
+            return self
+        else:
+            return self.filter(
+                Q(project__membership__user=user)
+                & (
+                    Q(project__membership__expires_at__isnull=True)
+                    | Q(project__membership__expires_at__gte=datetime.now())
+                )
+            )
+
+
+TaskManager = models.Manager.from_queryset(TaskQuerySet)
 
 
 class Task(models.Model):
