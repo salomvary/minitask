@@ -13,6 +13,8 @@ First time setup:
 Running the development server:
 
     poetry run python manage.py runserver
+    # To enable SQL logging:
+    DEBUG_SQL=true poetry run python manage.py runserver
 
 Specifying the server language:
 

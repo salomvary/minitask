@@ -58,6 +58,28 @@ if bool(distutils.util.strtobool(os.environ.get("ENABLE_HEROKU_LOGGING", "False"
         },
         "loggers": {"testlogger": {"handlers": ["console"], "level": "INFO",}},
     }
+elif bool(distutils.util.strtobool(os.environ.get("DEBUG_SQL", "False"))):
+    LOGGING = {
+        "version": 1,
+        "handlers": {
+            # "console": {"class": "logging.StreamHandler",},
+            "sqlhandler": {
+                "level": "DEBUG",
+                "class": "logging.StreamHandler",
+                "formatter": "sqlformatter",
+            },
+        },
+        "formatters": {
+            "sqlformatter": {
+                "()": "ddquery.SqlFormatter",
+                "format": "%(levelname)s %(message)s",
+            },
+        },
+        "loggers": {
+            "django.db.backends": {"handlers": ["sqlhandler"], "level": "DEBUG",},
+        },
+        # "root": {"handlers": ["console"],},
+    }
 
 ALLOWED_HOSTS = [os.environ["ALLOWED_HOSTS"]] if "ALLOWED_HOSTS" in os.environ else []
 
