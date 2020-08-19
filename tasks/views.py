@@ -11,7 +11,10 @@ from .models import Task, Note, Project
 
 @login_required
 def index(request):
-    project_choices = [(project.id, str(project)) for project in Project.objects.all()]
+    projects = Project.objects.visible_to_user(request.user)
+
+    # Set up the filter form
+    project_choices = [(project.id, str(project)) for project in projects]
     assignee_choices = [(user.id, str(user)) for user in User.objects.all()]
     form = TaskFilterForm(
         request.GET, project_choices=project_choices, assignee_choices=assignee_choices

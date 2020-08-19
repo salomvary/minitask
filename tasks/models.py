@@ -7,7 +7,30 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 
+class ProjectQuerySet(models.QuerySet):
+    """Queries for the Project model"""
+
+    def visible_to_user(self, user):
+        """Filter for projects visible to the user"""
+
+        if user.is_superuser:
+            return self
+        else:
+            return self.filter(
+                Q(membership__user=user)
+                & (
+                    Q(membership__expires_at__isnull=True)
+                    | Q(membership__expires_at__gte=datetime.now())
+                )
+            )
+
+
+ProjectManager = models.Manager.from_queryset(ProjectQuerySet)
+
+
 class Project(models.Model):
+    objects = ProjectManager()
+
     title = models.CharField(_("title"), max_length=500)
 
     owner = models.ForeignKey(

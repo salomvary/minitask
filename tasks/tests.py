@@ -237,6 +237,25 @@ class ViewsTests(TestCase):
         self.assertContains(response, "Test Task 1")
         self.assertNotContains(response, "Test Task 2")
 
+    def test_index_filter_form_projects(self):
+        """Project filter dropdown contains projects available to the user"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project1 = Project(title="Visible Project")
+        project1.save()
+        project1.members.add(user)
+
+        project2 = Project(title="Hidden Project")
+        project2.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        response = client.get(f"/?project={project1.id}")
+        self.assertContains(response, "Visible Project")
+        self.assertNotContains(response, "Hidden Project")
+
     def test_new_unauthenticated(self):
         """New task form redirects to login when unauthenticated"""
 
