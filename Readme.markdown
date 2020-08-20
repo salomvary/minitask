@@ -71,6 +71,26 @@ Working with translations:
 
 Django has excellent [documentation on deploying applications to production](https://docs.djangoproject.com/en/3.1/howto/deployment/). Below are a few concrete examples.
 
+### Configuration
+
+Minitask can be configured using the following environment variables:
+
+- `SECRET_KEY`: required, a random string. [Django documentation](https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-SECRET_KEY)
+- `DEBUG`: optional, defaults to `false`.
+- `ENABLE_HEROKU_LOGGING`: optional, defaults to `false`. Set this to `true` when deploying to Heroku.
+- `DEBUG_SQL`: optional, defaults to `false`. Set this to true in development to have all SQL queries logged.
+- `ALLOWED_HOSTS`: required in production. [Django documentation](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts).
+- `DATABASE_URL`: optional, sets up the database connection. Falls back to using [SQLite](https://sqlite.org/index.html)if not provided. [URL Schema documentation](https://github.com/jacobian/dj-database-url#url-schema).
+- `LANGUAGE_CODE`: optional, defaults to `en-us`. Sets the user interface language. [Django documentation](https://docs.djangoproject.com/en/3.1/ref/settings/#language-code)
+- `TIME_ZONE`: optional, defaults to `UTC`. Set this to your local time zone, eg. `Europe/Budapest`. [Django documentation](https://docs.djangoproject.com/en/3.1/ref/settings/#time-zone) 
+- `SERVE_STATIC`: optional, defaults to `false` in production. Set this to `true` in production unless you want to take care of serving static files outside of the Django application.
+
+### What database should I use?
+
+Minitask supports [all databases that Django supports](https://docs.djangoproject.com/en/3.1/ref/databases/).
+
+If you don't configure a database, Minitask will use a local SQLite database. SQLite works perfectly for development and might also be acceptable in production, if you run the application on a **single server instance** and the amount of concurrent write operations is very low. More about this [here](https://www.sqlite.org/whentouse.html). The most important warning to keep in mind is that if you happen to outgrow SQLite, migrating to another database engine might be a non-trivial process, as [some people on the internet claim](https://github.com/twoscoops/two-scoops-of-django-1.11/issues/17#issuecomment-295835067).
+
 ### Running on Ubuntu LTS
 
 ⚠️ This section is heavily work-in-progress.
