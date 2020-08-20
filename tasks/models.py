@@ -5,8 +5,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
-
-from ool import VersionField, VersionedMixin
+from ool import VersionedMixin, VersionField
+from taggit.managers import TaggableManager
 
 
 class ProjectQuerySet(models.QuerySet):
@@ -191,6 +191,12 @@ class Task(VersionedMixin, models.Model):
         null=True,
         related_name="assignee",
         verbose_name=_("assignee"),
+    )
+
+    tags = TaggableManager(
+        verbose_name=_("tags"),
+        help_text=_("A comma-separated list of tags."),
+        blank=True,
     )
 
     class Meta:

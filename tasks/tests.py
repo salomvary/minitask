@@ -386,6 +386,7 @@ class ViewsTests(TransactionTestCase):
                 "title": "Test Task",
                 "status": "open",
                 "priority": 2,
+                "tags": "foo,bar",
             },
         )
 
@@ -394,6 +395,7 @@ class ViewsTests(TransactionTestCase):
         self.assertEqual(task.title, "Test Task")
         self.assertEqual(task.project, project)
         self.assertEqual(task.priority, 2)
+        self.assertEqual(set(task.tags.names()), set(["foo", "bar"]))
 
     def test_create_not_member(self):
         """New task is not created for a project the user is not member in"""
@@ -413,6 +415,7 @@ class ViewsTests(TransactionTestCase):
                 "title": "Test Task",
                 "status": "open",
                 "priority": 2,
+                "tags": "",
             },
         )
 
@@ -429,7 +432,13 @@ class ViewsTests(TransactionTestCase):
         client.login(username="testuser", password="test")
         response = client.post(
             "/tasks",
-            {"project": 1, "title": "Test Task", "status": "open", "priority": 2,},
+            {
+                "project": 1,
+                "title": "Test Task",
+                "status": "open",
+                "priority": 2,
+                "tags": "",
+            },
         )
 
         # Should actually be 404 but anything that's not success is fine for now
@@ -564,6 +573,7 @@ class ViewsTests(TransactionTestCase):
                 "title": "New Title",
                 "priority": 2,
                 "status": "open",
+                "tags": "",
             },
         )
 
@@ -811,6 +821,7 @@ class ViewTestsWithTransaction(TransactionTestCase):
                 "title": "Test Task V2",
                 "priority": 0,
                 "status": "open",
+                "tags": "",
             },
         )
 

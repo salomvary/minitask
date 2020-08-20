@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-20 08:38+0200\n"
+"POT-Creation-Date: 2020-08-20 10:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,12 +112,12 @@ msgstr "legmagasabb"
 msgid "description"
 msgstr "leírás"
 
-#: tasks/models.py:175 tasks/templates/index.html:17
+#: tasks/models.py:175 tasks/templates/index.html:18
 #: tasks/templates/tasks/detail.html:37
 msgid "due date"
 msgstr "határidő"
 
-#: tasks/models.py:177 tasks/models.py:235 tasks/templates/index.html:18
+#: tasks/models.py:177 tasks/models.py:240 tasks/templates/index.html:19
 #: tasks/templates/tasks/detail.html:45
 msgid "created at"
 msgstr "létrehozva"
@@ -137,27 +137,36 @@ msgstr "prioritás"
 msgid "assignee"
 msgstr "felelős"
 
-#: tasks/models.py:197
+#: tasks/models.py:197 tasks/templates/index.html:17
+#: tasks/templates/tasks/detail.html:61
+msgid "tags"
+msgstr "Címkék"
+
+#: tasks/models.py:198
+msgid "A comma-separated list of tags."
+msgstr "Címkék vesszővel elválasztva."
+
+#: tasks/models.py:202
 msgid "task"
 msgstr "feladat"
 
-#: tasks/models.py:198 tasks/templates/base.html:21
+#: tasks/models.py:203 tasks/templates/base.html:21
 msgid "tasks"
 msgstr "feladatok"
 
-#: tasks/models.py:230 tasks/models.py:248
+#: tasks/models.py:235 tasks/models.py:253
 msgid "notes"
 msgstr "megjegyzések"
 
-#: tasks/models.py:233
+#: tasks/models.py:238
 msgid "body"
 msgstr "megjegyzés"
 
-#: tasks/models.py:243
+#: tasks/models.py:248
 msgid "author"
 msgstr "szerző"
 
-#: tasks/models.py:247
+#: tasks/models.py:252
 msgid "note"
 msgstr "megjegyzés"
 
@@ -174,7 +183,7 @@ msgstr "kilépés"
 msgid "New task"
 msgstr "Új feladat"
 
-#: tasks/templates/index.html:44
+#: tasks/templates/index.html:46
 #, python-format
 msgid ""
 "\n"
@@ -188,7 +197,7 @@ msgstr ""
 "    Próbálj meg pár szűrőt törölni, vagy  <a href=\"%(clear_link)s\">töröld "
 "az mindet</a>."
 
-#: tasks/templates/index.html:52
+#: tasks/templates/index.html:54
 #, python-format
 msgid ""
 "\n"
@@ -232,19 +241,19 @@ msgstr "Mindet töröl"
 msgid "Filter"
 msgstr "Szűrés"
 
-#: tasks/templates/tasks/detail.html:64
+#: tasks/templates/tasks/detail.html:72
 msgid "Duplicate"
 msgstr "Másolat"
 
-#: tasks/templates/tasks/detail.html:67 tasks/templates/tasks/detail.html:78
+#: tasks/templates/tasks/detail.html:75 tasks/templates/tasks/detail.html:86
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: tasks/templates/tasks/detail.html:71
+#: tasks/templates/tasks/detail.html:79
 msgid "Notes"
 msgstr "Megjegyzések"
 
-#: tasks/templates/tasks/detail.html:97
+#: tasks/templates/tasks/detail.html:105
 msgid "Add note"
 msgstr "Megjegyzés hozzáfűzése"
 
@@ -264,10 +273,9 @@ msgid ""
 "window</a>.\n"
 msgstr ""
 "\n"
-"Ezt a feladatot valaki módosította miközben szerkesztetted."
-"<br>\n"
-"Vagy <a href=\"%(edit_link)s\">frissíted ezt az oldalt és elveszted a változtatásaidat</a>, "
-"vagy\n"
+"Ezt a feladatot valaki módosította miközben szerkesztetted.<br>\n"
+"Vagy <a href=\"%(edit_link)s\">frissíted ezt az oldalt és elveszted a "
+"változtatásaidat</a>, vagy\n"
 "<a href=\"%(edit_link)s\" target=\"_blank\">megnyitod a legfrissebb verziót "
 "egy új ablakban</a>.\n"
 

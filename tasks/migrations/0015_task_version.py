@@ -7,13 +7,11 @@ import ool
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tasks', '0014_auto_20200819_1343'),
+        ("tasks", "0014_auto_20200819_1343"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='task',
-            name='version',
-            field=ool.VersionField(default=0),
+            model_name="task", name="version", field=ool.VersionField(default=0),
         ),
     ]

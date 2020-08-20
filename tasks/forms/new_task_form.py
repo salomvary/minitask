@@ -25,6 +25,7 @@ class NewTaskForm(ModelForm):
             "priority",
             "due_date",
             "assignee",
+            "tags",
         )
         widgets = {
             "due_date": DateInput(
