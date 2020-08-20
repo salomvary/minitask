@@ -6,6 +6,8 @@ from django.db.models import Q
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
+from ool import VersionField, VersionedMixin
+
 
 class ProjectQuerySet(models.QuerySet):
     """Queries for the Project model"""
@@ -140,7 +142,7 @@ class TaskQuerySet(models.QuerySet):
 TaskManager = models.Manager.from_queryset(TaskQuerySet)
 
 
-class Task(models.Model):
+class Task(VersionedMixin, models.Model):
     objects = TaskManager()
 
     STATUS_CHOICES = [
@@ -156,6 +158,8 @@ class Task(models.Model):
         (1, _("high")),
         (2, _("highest")),
     ]
+
+    version = VersionField()
 
     project = models.ForeignKey(
         Project,

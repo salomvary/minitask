@@ -1,7 +1,7 @@
-from datetime import date, timedelta, datetime
+from datetime import date, datetime, timedelta
 
 from django.contrib.auth.models import User
-from django.test import Client, TestCase
+from django.test import Client, TestCase, TransactionTestCase
 
 from .forms.task_filter_form import TaskFilterForm
 from .models import Note, Project, Task
@@ -185,7 +185,7 @@ class ModelTests(TestCase):
         self.assertEqual(list(tasks), [task])
 
 
-class ViewsTests(TestCase):
+class ViewsTests(TransactionTestCase):
     def test_index_unauthenticated(self):
         """Index redirects to login when unauthenticated"""
 
@@ -381,6 +381,7 @@ class ViewsTests(TestCase):
         response = client.post(
             "/tasks",
             {
+                "version": 0,
                 "project": project.id,
                 "title": "Test Task",
                 "status": "open",
@@ -407,6 +408,7 @@ class ViewsTests(TestCase):
         response = client.post(
             "/tasks",
             {
+                "version": 0,
                 "project": project.id,
                 "title": "Test Task",
                 "status": "open",
@@ -557,6 +559,7 @@ class ViewsTests(TestCase):
         response = client.post(
             "/tasks/" + str(task.id) + "/edit",
             {
+                "version": 0,
                 "project": project.id,
                 "title": "New Title",
                 "priority": 2,
@@ -585,8 +588,9 @@ class ViewsTests(TestCase):
         response = client.post(
             "/tasks/" + str(task.id) + "/edit",
             {
+                "version": 0,
                 # "project": project.id,
-                "title": "New Title"
+                "title": "New Title",
             },
         )
 
@@ -770,3 +774,62 @@ class ViewsTests(TestCase):
         response = client.post(f"/notes/{note.id}/edit", {"body": "New test note"})
 
         self.assertEqual(response.status_code, 404)
+
+
+class ViewTestsWithTransaction(TransactionTestCase):
+    """
+    Some tests need to be run in real transactions but TransactionTestCase
+    is significantly slower then TestCase therefore this test case should only
+    contain tests that really need transactions.
+    """
+
+    # Without TransactionTestCase this test fails with the following error:
+    # "An error occurred in the current transaction.
+    # You can't execute queries until the end of the 'atomic' block."
+    # Not entirely sure if this is a bug or feature in django.test.
+    def test_edit_concurrent_post(self):
+        """Concurrent edits are prevented"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        project.members.add(user)
+        task = Task(project=project, title="Test Task V1")
+        task.save()
+        task.refresh_from_db()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        # First update is ok
+        response = client.post(
+            "/tasks/" + str(task.id) + "/edit",
+            {
+                "version": task.version,
+                "project": project.id,
+                "title": "Test Task V2",
+                "priority": 0,
+                "status": "open",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        task_updated = Task.objects.get(pk=task.id)
+        self.assertEqual(task_updated.title, "Test Task V2")
+
+        # Second update concurrently should be prevented
+        response = client.post(
+            "/tasks/" + str(task.id) + "/edit",
+            {
+                "version": task.version,
+                "project": project.id,
+                "title": "Test Task V3",
+                "priority": 0,
+                "status": "open",
+            },
+        )
+
+        self.assertContains(response, "The task has been modified", status_code=409)
+        updated_task = Task.objects.get(pk=task.id)
+        self.assertEqual(updated_task.title, "Test Task V2")

@@ -120,6 +120,17 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 category = "main"
+description = "Offline optimistic locking for Django"
+name = "django-optimistic-lock"
+optional = false
+python-versions = "*"
+version = "1.0.0"
+
+[package.dependencies]
+django = ">=1.11"
+
+[[package]]
+category = "main"
 description = "WSGI HTTP Server for UNIX"
 name = "gunicorn"
 optional = false
@@ -299,7 +310,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "f57871fde3508189ded25d32e1ea06bad429c83cbb3e5cbe6c162de9335bada7"
+content-hash = "d9a715f7fd131184ce39b63998a97f290dbd91b57eff5b4a7ef53f6bb97af66f"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -342,6 +353,9 @@ dj-database-url = [
 django = [
     {file = "Django-3.1-py3-none-any.whl", hash = "sha256:1a63f5bb6ff4d7c42f62a519edc2adbb37f9b78068a5a862beff858b68e3dc8b"},
     {file = "Django-3.1.tar.gz", hash = "sha256:2d390268a13c655c97e0e2ede9d117007996db692c1bb93eabebd4fb7ea7012b"},
+]
+django-optimistic-lock = [
+    {file = "django-optimistic-lock-1.0.0.tar.gz", hash = "sha256:dcc9cdc2219e6ec36757457d1ee9e55b2ec851d75308ad1080c1c2f00951cac8"},
 ]
 gunicorn = [
     {file = "gunicorn-20.0.4-py2.py3-none-any.whl", hash = "sha256:cd4a810dd51bf497552cf3f863b575dabd73d6ad6a91075b65936b151cbf4f9c"},

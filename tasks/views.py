@@ -5,6 +5,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from ool import ConcurrentUpdate
 
 from .forms.new_task_form import NewTaskForm
 from .forms.note_form import NoteForm
@@ -96,7 +97,21 @@ def edit_task(request, task_id):
 
     if request.method == "POST":
         if form.is_valid():
-            form.save()
+            try:
+                form.save()
+            except ConcurrentUpdate:
+                return render(
+                    request,
+                    "tasks/edit.html",
+                    {
+                        "user": request.user,
+                        "task": task,
+                        "form": form,
+                        "is_concurrent_update": True,
+                    },
+                    status=409,
+                )
+
             action = request.POST.get("action")
             if action == "copy":
                 return redirect("copy", task.id)

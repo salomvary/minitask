@@ -17,6 +17,7 @@ class NewTaskForm(ModelForm):
     class Meta:
         model = Task
         fields = (
+            "version",
             "project",
             "title",
             "description",
