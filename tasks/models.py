@@ -88,8 +88,13 @@ class TaskQuerySet(models.QuerySet):
     def sorted_for_dashboard(self):
         """Default sorting order for the dashboard"""
 
-        return self.extra(select={"status_order": self.CASE_SQL}).order_by(
-            "-status_order", models.F("due_date").asc(nulls_last=True), "-priority"
+        return (
+            self.select_related("project")
+            .prefetch_related("tags")
+            .extra(select={"status_order": self.CASE_SQL})
+            .order_by(
+                "-status_order", models.F("due_date").asc(nulls_last=True), "-priority"
+            )
         )
 
     def filtered_by(

@@ -1,9 +1,9 @@
 {% load i18n %}
 
-{% for tag in tags %}
+{% for tag in tags.all %}
 <a class="badge badge-pill badge-primary"
     {% comment %} href="{% url 'index'%}?tags={{ tag }}" {% endcomment %}
 >
-    {{ tag }}
+    {{ tag.name }}
 </a>
 {% endfor %}
