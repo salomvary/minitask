@@ -3,6 +3,7 @@ from datetime import date, timedelta
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from taggit.forms import TagField, TagWidget
 
 from tasks.models import Task
 
@@ -53,6 +54,14 @@ class TaskFilterForm(forms.Form):
         required=False,
         empty_value=None,
         widget=forms.Select(attrs={"class": "custom-select custom-select-sm"}),
+    )
+
+    tags = TagField(
+        label=_("Tags"),
+        required=False,
+        widget=TagWidget(attrs={"class": "form-control form-control-sm"}),
+        empty_value=None,
+        # widget=forms.Select(attrs={"class": "custom-select custom-select-sm"}),
     )
 
     def previous_due_date(self):

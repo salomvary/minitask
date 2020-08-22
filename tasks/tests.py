@@ -256,6 +256,31 @@ class ViewsTests(TransactionTestCase):
         self.assertContains(response, "Visible Project")
         self.assertNotContains(response, "Hidden Project")
 
+    def test_index_filter_by_tag(self):
+        """Tasks can be filtered by tag"""
+
+        User.objects.create_user("testuser", password="test", is_superuser=True)
+
+        project1 = Project(title="Test Project 1")
+        project1.save()
+        task1 = Task(project=project1, title="Test Task 1", priority=0)
+        task1.save()
+        task1.tags.add("foo", "bar")
+        task2 = Task(project=project1, title="Test Task 2", priority=0)
+        task2.save()
+        task2.tags.add("bar", "qux")
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        response = client.get("/?tags=foo")
+        self.assertContains(response, "Test Task 1")
+        self.assertNotContains(response, "Test Task 2")
+
+        response = client.get("/?tags=bar,qux")
+        self.assertNotContains(response, "Test Task 1")
+        self.assertContains(response, "Test Task 2")
+
     def test_new_unauthenticated(self):
         """New task form redirects to login when unauthenticated"""
 

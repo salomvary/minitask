@@ -104,6 +104,7 @@ class TaskQuerySet(models.QuerySet):
         due_date_after=None,
         status=None,
         assignee=None,
+        tags=None,
     ):
         """Filter by user provided field values"""
 
@@ -125,6 +126,10 @@ class TaskQuerySet(models.QuerySet):
 
         if assignee is not None:
             query = query.filter(assignee=assignee)
+
+        if tags is not None and len(tags) > 0:
+            for tag in tags:
+                query = query.filter(tags__name=tag)
 
         return query
 

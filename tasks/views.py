@@ -41,6 +41,7 @@ def index(request):
             due_date_after=form.cleaned_data.get("due_date_after"),
             status=form.cleaned_data.get("status"),
             assignee=form.cleaned_data.get("assignee"),
+            tags=form.cleaned_data.get("tags"),
         )
         .sorted_for_dashboard()
         .all()
