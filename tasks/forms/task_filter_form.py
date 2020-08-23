@@ -9,6 +9,8 @@ from tasks.models import Task
 
 
 class TaskFilterForm(forms.Form):
+    """Form to filter the task list"""
+
     def __init__(self, *args, project_choices=None, assignee_choices=None, **kwargs):
         super(TaskFilterForm, self).__init__(*args, **kwargs)
         self.fields["project"].choices = [("", "")] + (project_choices or [])
@@ -32,6 +34,26 @@ class TaskFilterForm(forms.Form):
     )
 
     due_date_before = forms.DateField(
+        label=_("Before"),
+        required=False,
+        widget=forms.DateInput(
+            # ISO date must be used with <input type=date> all times
+            format="%Y-%m-%d",
+            attrs={"class": "form-control form-control-sm", "type": "date"},
+        ),
+    )
+
+    created_after = forms.DateField(
+        label=_("Created after"),
+        required=False,
+        widget=forms.DateInput(
+            # ISO date must be used with <input type=date> all times
+            format="%Y-%m-%d",
+            attrs={"class": "form-control form-control-sm", "type": "date"},
+        ),
+    )
+
+    created_before = forms.DateField(
         label=_("Before"),
         required=False,
         widget=forms.DateInput(
@@ -65,18 +87,28 @@ class TaskFilterForm(forms.Form):
     )
 
     def previous_due_date(self):
-        """Change the due date interval to the next"""
-
-        return self._offset_due_date(-1)
-
-    def next_due_date(self):
         """Change the due date interval to the previous"""
 
-        return self._offset_due_date(1)
+        return self._offset_date_range("due_date_after", "due_date_before", -1)
 
-    def _offset_due_date(self, direction):
+    def next_due_date(self):
+        """Change the due date interval to the next"""
+
+        return self._offset_date_range("due_date_after", "due_date_before", 1)
+
+    def previous_created_at(self):
+        """Change the create date interval to the previous"""
+
+        return self._offset_date_range("created_after", "created_before", -1)
+
+    def next_created_at(self):
+        """Change the create date interval to the next"""
+
+        return self._offset_date_range("created_after", "created_before", 1)
+
+    def _offset_date_range(self, after_field_name, before_field_name, direction):
         """
-        Change the due date interval by the same range
+        Change a date interval by the same range
 
         If the range includes x days, change to the next/previous x days.
         If the range includes *exactly* x months, change to the next/previous x months.
@@ -85,38 +117,34 @@ class TaskFilterForm(forms.Form):
         """
 
         if self.cleaned_data:
-            due_date_after: date = self.cleaned_data.get("due_date_after")
-            due_date_before: date = self.cleaned_data.get("due_date_before")
+            after: date = self.cleaned_data.get(after_field_name)
+            before: date = self.cleaned_data.get(before_field_name)
 
-            if due_date_after is not None and due_date_before is not None:
+            if after is not None and before is not None:
                 # Avoid modifying the data argument passed in to the form
                 data = self.data.copy()
 
                 # Compute the new interval
-                if _is_full_month(due_date_after, due_date_before):
+                if _is_full_month(after, before):
                     # The range was from beginning to end of month -> step by months
-                    diff_months = direction * (
-                        _diff_months(due_date_after, due_date_before) + 1
-                    )
-                    new_due_date_after = _add_months(due_date_after, diff_months)
-                    new_due_date_before = _add_months(due_date_before, diff_months)
+                    diff_months = direction * (_diff_months(after, before) + 1)
+                    new_after = _add_months(after, diff_months)
+                    new_before = _add_months(before, diff_months)
                 else:
                     # Otherwise step by the number of days included in the range
-                    diff = direction * (
-                        due_date_before - due_date_after + timedelta(days=1)
-                    )
-                    new_due_date_after = due_date_after + diff
-                    new_due_date_before = due_date_before + diff
+                    diff = direction * (before - after + timedelta(days=1))
+                    new_after = after + diff
+                    new_before = before + diff
 
-                # Update the parsed and display value of due_date_after
-                format_after = self.fields["due_date_after"].widget.format_value
-                data["due_date_after"] = format_after(new_due_date_after)
-                self.cleaned_data["due_date_after"] = new_due_date_after
+                # Update the parsed and display value of after
+                format_after = self.fields[after_field_name].widget.format_value
+                data[after_field_name] = format_after(new_after)
+                self.cleaned_data[after_field_name] = new_after
 
-                # Update the parsed and display value of due_date_before
-                format_before = self.fields["due_date_before"].widget.format_value
-                data["due_date_before"] = format_before(new_due_date_before)
-                self.cleaned_data["due_date_before"] = new_due_date_before
+                # Update the parsed and display value of before
+                format_before = self.fields[before_field_name].widget.format_value
+                data[before_field_name] = format_before(new_before)
+                self.cleaned_data[before_field_name] = new_before
 
                 self.data = data
 
