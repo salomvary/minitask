@@ -99,7 +99,14 @@ If you don't configure a database, Minitask will use a local SQLite database. SQ
     cd /opt/minitask
     apt install python3 python3-pip
     pip3 install -r requirements.txt
-    gunicorn minitask.wsgi
+    # Re-run this every time you install a new Minitask version
+    SERVE_STATIC=true DEBUG=false python manage.py collectstatic
+    # Replace my.host.name with whatever domain name or ip address you use for accessing the application.
+    # Also don't forget to generate a long secret, eg. with `pwgen -sy 50` or your favorite password manager
+    # and set it with SECRET_KEY=v3rys3cret
+    # You can add more configuration options hire, like LANGUAGE_CODE=hu-hu
+    SERVE_STATIC=true ALLOWED_HOSTS=my.host.name DEBUG=false SECRET_KEY=v3rys3cret gunicorn --bind 0.0.0.0:8000 minitask.wsgi
+    SECRET_KEY=v3rys3cret python manage.py createsuperuser
 
 The application should be listening at http://hostname:8000.
 
