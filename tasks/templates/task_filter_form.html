@@ -12,7 +12,17 @@
 
         TODO: fix the taborder as well.
         {% endcomment %}
-        <div class="form-group col-auto col-sm-4 col-lg d-flex align-items-end order-12">
+        <div
+            class="
+                form-group
+                col-sm-4
+                col-lg
+                d-flex
+                align-items-end
+                justify-content-end
+                order-12
+            "
+        >
             <a href="{% url 'index' %}" class="btn btn-sm btn-link text-nowrap mr-2">
                 {% translate "Clear all" %}
             </a>
@@ -22,28 +32,32 @@
             </button>
         </div>
 
-        <div class="form-group col-auto col-sm-4 col-lg">
-            {{ form.project.label_tag }}
-            {{ form.project }}
+        <div class="col-sm-4 col-lg">
+            <div class="form-group">
+                {{ form.project.label_tag }}
+                {{ form.project }}
+            </div>
+
+            <div class="form-group">
+                {{ form.assignee.label_tag }}
+                {{ form.assignee }}
+            </div>
         </div>
 
         {% include "date_range.html" with after=form.due_date_after before=form.due_date_before %}
 
         {% include "date_range.html" with after=form.created_after before=form.created_before %}
 
-        <div class="form-group col-auto col-sm-4 col-lg">
-            {{ form.status.label_tag }}
-            {{ form.status }}
-        </div>
+        <div class="col-sm-4 col-lg">
+            <div class="form-group">
+                {{ form.status.label_tag }}
+                {{ form.status }}
+            </div>
 
-        <div class="form-group col-auto col-sm-4 col-lg">
-            {{ form.assignee.label_tag }}
-            {{ form.assignee }}
-        </div>
-
-        <div class="form-group col-auto col-sm-4 col-lg">
-            {{ form.tags.label_tag }}
-            {{ form.tags }}
+            <div class="form-group">
+                {{ form.tags.label_tag }}
+                {{ form.tags }}
+            </div>
         </div>
     </div>
 </form>
