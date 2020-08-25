@@ -1,8 +1,9 @@
 {% load i18n %}
 {% load static %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
-<html lang="en_US" class="h-100">
+<html lang="{{LANGUAGE_CODE}}" class="h-100">
   <head>
     <meta charset="utf-8" />
     <title>{% block title %}{% endblock %} | Minitask</title>
