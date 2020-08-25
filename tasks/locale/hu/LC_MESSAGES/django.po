@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-22 13:42+0200\n"
+"POT-Creation-Date: 2020-08-25 10:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,35 +18,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: tasks/forms/task_filter_form.py:19
+#: tasks/forms/task_filter_form.py:20
 msgid "Project"
 msgstr "Projekt"
 
-#: tasks/forms/task_filter_form.py:26
+#: tasks/forms/task_filter_form.py:27
 msgid "Due after"
 msgstr "Határidő után"
 
-#: tasks/forms/task_filter_form.py:36
-msgid "Before"
-msgstr "Előtt"
+#: tasks/forms/task_filter_form.py:37
+msgid "Due before"
+msgstr "Határidő előtt"
 
-#: tasks/forms/task_filter_form.py:46
+#: tasks/forms/task_filter_form.py:47
+msgid "Created after"
+msgstr "Létrehozva után"
+
+#: tasks/forms/task_filter_form.py:57
+msgid "Created before"
+msgstr "Létrehozva előtt"
+
+#: tasks/forms/task_filter_form.py:67
 msgid "Status"
 msgstr "Állapot"
 
-#: tasks/forms/task_filter_form.py:54
+#: tasks/forms/task_filter_form.py:75
 msgid "Assignee"
 msgstr "Felelős"
 
-#: tasks/forms/task_filter_form.py:61
+#: tasks/forms/task_filter_form.py:82
 msgid "Tags"
 msgstr "Címkék"
 
-#: tasks/models.py:37 tasks/models.py:181 tasks/templates/index.html:13
+#: tasks/models.py:37 tasks/models.py:181 tasks/templates/index.html:14
 msgid "title"
 msgstr "cím"
 
-#: tasks/models.py:42 tasks/models.py:178 tasks/templates/index.html:12
+#: tasks/models.py:42 tasks/models.py:178 tasks/templates/index.html:13
 msgid "project"
 msgstr "projekt"
 
@@ -116,32 +124,32 @@ msgstr "legmagasabb"
 msgid "description"
 msgstr "leírás"
 
-#: tasks/models.py:185 tasks/templates/index.html:18
+#: tasks/models.py:185 tasks/templates/index.html:19
 #: tasks/templates/tasks/detail.html:37
 msgid "due date"
 msgstr "határidő"
 
-#: tasks/models.py:187 tasks/models.py:251 tasks/templates/index.html:19
+#: tasks/models.py:187 tasks/models.py:251 tasks/templates/index.html:20
 #: tasks/templates/tasks/detail.html:45
 msgid "created at"
 msgstr "létrehozva"
 
-#: tasks/models.py:190 tasks/templates/index.html:14
+#: tasks/models.py:190 tasks/templates/index.html:15
 #: tasks/templates/tasks/detail.html:21
 msgid "status"
 msgstr "állapot"
 
-#: tasks/models.py:194 tasks/templates/index.html:16
+#: tasks/models.py:194 tasks/templates/index.html:17
 #: tasks/templates/tasks/detail.html:29
 msgid "priority"
 msgstr "prioritás"
 
-#: tasks/models.py:203 tasks/templates/index.html:15
+#: tasks/models.py:203 tasks/templates/index.html:16
 #: tasks/templates/tasks/detail.html:53
 msgid "assignee"
 msgstr "felelős"
 
-#: tasks/models.py:207 tasks/templates/index.html:17
+#: tasks/models.py:207 tasks/templates/index.html:18
 #: tasks/templates/tasks/detail.html:61
 msgid "tags"
 msgstr "Címkék"
@@ -187,7 +195,15 @@ msgstr "kilépés"
 msgid "New task"
 msgstr "Új feladat"
 
-#: tasks/templates/index.html:46
+#: tasks/templates/date_range.html:13 tasks/templates/date_range.html:14
+msgid "Previous interval"
+msgstr "Előző időszak"
+
+#: tasks/templates/date_range.html:33 tasks/templates/date_range.html:34
+msgid "Next interval"
+msgstr "Következő időszak"
+
+#: tasks/templates/index.html:47
 #, python-format
 msgid ""
 "\n"
@@ -201,7 +217,7 @@ msgstr ""
 "    Próbálj meg pár szűrőt törölni, vagy  <a href=\"%(clear_link)s\">töröld "
 "az mindet</a>."
 
-#: tasks/templates/index.html:54
+#: tasks/templates/index.html:55
 #, python-format
 msgid ""
 "\n"
@@ -217,31 +233,21 @@ msgstr ""
 msgid "Editing note"
 msgstr "Megjegyzés szerkesztése"
 
-#: tasks/templates/notes/edit.html:14 tasks/templates/tasks/edit.html:25
+#: tasks/templates/notes/edit.html:14 tasks/templates/tasks/edit.html:33
 #: tasks/templates/tasks/new.html:14
 msgid "Cancel"
 msgstr "Mégsem"
 
-#: tasks/templates/notes/edit.html:17 tasks/templates/tasks/edit.html:34
+#: tasks/templates/notes/edit.html:17 tasks/templates/tasks/edit.html:30
 #: tasks/templates/tasks/new.html:23
 msgid "Save"
 msgstr "Mentés"
 
-#: tasks/templates/task_filter_form.html:19
-#: tasks/templates/task_filter_form.html:20
-msgid "Previous interval"
-msgstr "Előző időszak"
-
-#: tasks/templates/task_filter_form.html:39
-#: tasks/templates/task_filter_form.html:40
-msgid "Next interval"
-msgstr "Következő időszak"
-
-#: tasks/templates/task_filter_form.html:65
+#: tasks/templates/task_filter_form.html:28
 msgid "Clear all"
 msgstr "Mindet töröl"
 
-#: tasks/templates/task_filter_form.html:69
+#: tasks/templates/task_filter_form.html:32
 msgid "Filter"
 msgstr "Szűrés"
 
@@ -283,11 +289,11 @@ msgstr ""
 "<a href=\"%(edit_link)s\" target=\"_blank\">megnyitod a legfrissebb verziót "
 "egy új ablakban</a>.\n"
 
-#: tasks/templates/tasks/edit.html:28 tasks/templates/tasks/new.html:17
+#: tasks/templates/tasks/edit.html:36 tasks/templates/tasks/new.html:17
 msgid "Save and duplicate"
 msgstr "Mentés és másolat"
 
-#: tasks/templates/tasks/edit.html:31 tasks/templates/tasks/new.html:20
+#: tasks/templates/tasks/edit.html:39 tasks/templates/tasks/new.html:20
 msgid "Save and new"
 msgstr "Mentés és új"
 

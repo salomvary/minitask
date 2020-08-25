@@ -34,7 +34,7 @@ class TaskFilterForm(forms.Form):
     )
 
     due_date_before = forms.DateField(
-        label=_("Before"),
+        label=_("Due before"),
         required=False,
         widget=forms.DateInput(
             # ISO date must be used with <input type=date> all times
@@ -54,7 +54,7 @@ class TaskFilterForm(forms.Form):
     )
 
     created_before = forms.DateField(
-        label=_("Before"),
+        label=_("Created before"),
         required=False,
         widget=forms.DateInput(
             # ISO date must be used with <input type=date> all times
