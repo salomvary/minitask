@@ -232,7 +232,7 @@ class ViewsTests(TransactionTestCase):
         response = client.get(f"/?project={project1.id}")
         self.assertInHTML(
             f"<option value='{project1.id}' selected>Test Project 1</option>",
-            str(response.content),
+            response.content.decode("utf-8"),
         )
         self.assertContains(response, "Test Task 1")
         self.assertNotContains(response, "Test Task 2")
