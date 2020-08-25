@@ -82,7 +82,7 @@ Minitask can be configured using the following environment variables:
 - `ALLOWED_HOSTS`: required in production. [Django documentation](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts).
 - `DATABASE_URL`: optional, sets up the database connection. Falls back to using [SQLite](https://sqlite.org/index.html)if not provided. [URL Schema documentation](https://github.com/jacobian/dj-database-url#url-schema).
 - `LANGUAGE_CODE`: optional, defaults to `en-us`. Sets the user interface language. [Django documentation](https://docs.djangoproject.com/en/3.1/ref/settings/#language-code)
-- `TIME_ZONE`: optional, defaults to `UTC`. Set this to your local time zone, eg. `Europe/Budapest`. [Django documentation](https://docs.djangoproject.com/en/3.1/ref/settings/#time-zone) 
+- `TIME_ZONE`: optional, defaults to `UTC`. Set this to your local time zone, eg. `Europe/Budapest`. [Django documentation](https://docs.djangoproject.com/en/3.1/ref/settings/#time-zone)
 - `SERVE_STATIC`: optional, defaults to `false` in production. Set this to `true` in production unless you want to take care of serving static files outside of the Django application.
 
 ### What database should I use?
@@ -131,4 +131,3 @@ If you are not familiar with Heroku [start here](https://devcenter.heroku.com/ar
     git push heroku master
     # Create superuser
     heroku run python manage.py createsuperuser
-
