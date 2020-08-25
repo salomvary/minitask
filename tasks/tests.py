@@ -263,7 +263,7 @@ class ViewsTests(TransactionTestCase):
         self.assertContains(response, "Test Task 1")
         self.assertNotContains(response, "Test Task 2")
 
-    def test_index_no_archived(self):
+    def test_index_no_archived_tasks(self):
         """Archived tasks are not shown"""
 
         user = User.objects.create_user("testuser", password="test", is_superuser=True)
@@ -288,6 +288,28 @@ class ViewsTests(TransactionTestCase):
 
         self.assertContains(response, "Normal Task")
         self.assertNotContains(response, "Archived Task")
+
+    def test_index_no_tasks_from_archived_projects(self):
+        """Tasks from archived projects are not shown"""
+
+        user = User.objects.create_user("testuser", password="test", is_superuser=True)
+
+        project1 = Project(title="Archived Project", is_archived=True)
+        project1.save()
+        task1 = Task(project=project1, created_by=user, title="Archived Project Task")
+        task1.save()
+        project2 = Project(title="Normal Project")
+        project2.save()
+        task2 = Task(project=project2, created_by=user, title="Normal Project Task")
+        task2.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        response = client.get("/")
+
+        self.assertContains(response, "Normal Project Task")
+        self.assertNotContains(response, "Archived Project Task")
 
     def test_index_show_archived(self):
         """Archived tasks are shown when explicitly requested"""
@@ -333,6 +355,26 @@ class ViewsTests(TransactionTestCase):
         response = client.get(f"/?project={project1.id}")
         self.assertContains(response, "Visible Project")
         self.assertNotContains(response, "Hidden Project")
+
+    def test_index_filter_form_no_archived_projects(self):
+        """Project filter dropdown does not contain archived projects"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project1 = Project(title="Normal Project")
+        project1.save()
+        project1.members.add(user)
+
+        project2 = Project(title="Archived Project", is_archived=True)
+        project2.save()
+        project2.members.add(user)
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        response = client.get(f"/?project={project1.id}")
+        self.assertContains(response, "Normal Project")
+        self.assertNotContains(response, "Archived Project")
 
     def test_index_filter_by_tag(self):
         """Tasks can be filtered by tag"""

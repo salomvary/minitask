@@ -15,11 +15,15 @@ class ProjectQuerySet(models.QuerySet):
     def visible_to_user(self, user):
         """Filter for projects visible to the user"""
 
+        # Fow now, tasks of archived projects are always hidden and there
+        # is no way to show them. Later we might add a "Project archives" section
+        query = self.exclude(is_archived=True)
+
         # FIXME: de-duplicate this filter
         if user.is_superuser:
-            return self
+            return query
         else:
-            return self.filter(
+            return query.filter(
                 Q(membership__user=user)
                 & (
                     Q(membership__expires_at__isnull=True)
@@ -37,6 +41,10 @@ class Project(models.Model):
     title = models.CharField(_("title"), max_length=500)
 
     members = models.ManyToManyField(User, through="ProjectMembership")
+
+    is_archived = models.BooleanField(
+        default=False, blank=False, null=False, verbose_name=_("archived"),
+    )
 
     class Meta:
         verbose_name = _("project")
@@ -86,7 +94,11 @@ class TaskQuerySet(models.QuerySet):
     """
 
     def all_visible(self, is_archived=False):
-        """Default sorting order for the dashboard"""
+        """
+        Default filtering and sorting of tasks
+
+        Filters out archived tasks and tasks of archived projects
+        """
 
         query = (
             self.select_related("project")
@@ -95,6 +107,9 @@ class TaskQuerySet(models.QuerySet):
             .order_by(
                 "-status_order", models.F("due_date").asc(nulls_last=True), "-priority"
             )
+            # Fow now, tasks of archived projects are always hidden and there
+            # is no way to show them. Later we might add a "Project archives" section
+            .exclude(project__is_archived=True)
         )
 
         if is_archived:
