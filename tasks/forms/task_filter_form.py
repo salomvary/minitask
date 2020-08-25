@@ -11,6 +11,17 @@ from tasks.models import Task
 class TaskFilterForm(forms.Form):
     """Form to filter the task list"""
 
+    STATUS_CHOICES = (
+        [("", "")]
+        # Status
+        + [(value, label.title()) for value, label in Task.STATUS_CHOICES]
+        # Not status
+        + [
+            ("!" + value, "%s %s" % (_("Not"), label))
+            for value, label in Task.STATUS_CHOICES
+        ]
+    )
+
     def __init__(self, *args, project_choices=None, assignee_choices=None, **kwargs):
         super(TaskFilterForm, self).__init__(*args, **kwargs)
         self.fields["project"].choices = [("", "")] + (project_choices or [])
@@ -65,7 +76,7 @@ class TaskFilterForm(forms.Form):
 
     status = forms.TypedChoiceField(
         label=_("Status"),
-        choices=[("", "")] + Task.STATUS_CHOICES,
+        choices=STATUS_CHOICES,
         required=False,
         empty_value=None,
         widget=forms.Select(attrs={"class": "custom-select custom-select-sm"}),

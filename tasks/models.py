@@ -102,7 +102,7 @@ class TaskQuerySet(models.QuerySet):
         project=None,
         due_date_before=None,
         due_date_after=None,
-        status=None,
+        status: str = None,
         assignee=None,
         tags=None,
     ):
@@ -122,7 +122,10 @@ class TaskQuerySet(models.QuerySet):
             query = query.filter(due_date__lte=due_date_before)
 
         if status is not None:
-            query = query.filter(status=status)
+            if status.startswith("!"):
+                query = query.exclude(status=status[1:])
+            else:
+                query = query.filter(status=status)
 
         if assignee is not None:
             query = query.filter(assignee=assignee)
