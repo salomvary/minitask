@@ -41,7 +41,7 @@
       </a>
       {% endif %}
     </nav>
-    <main role="main" class="container p-3">
+    <main role="main" class="{% block container_class %}container{% endblock %} p-3">
       {% block content %} Body content {% endblock %}
     </main>
   </body>
