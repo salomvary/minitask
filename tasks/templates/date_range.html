@@ -4,18 +4,17 @@
     <div class="form-group">
         {{ after.label_tag }}
         <div class="input-group">
+            {% if after.value and before.value %}
             <div class="input-group-prepend">
                 <button class="btn btn-outline-secondary btn-sm"
                     name="previous_due_date"
-                    {% if not after.value or not before.value %}
-                    disabled
-                    {% endif %}
                     aria-label="{% translate "Previous interval" %}"
                     title="{% translate "Previous interval" %}"
                 >
                     <span aria-hidden="true">&laquo;</span>
                 </button>
             </div>
+            {% endif %}
             {{ after }}
         </div>
     </div>
@@ -24,18 +23,17 @@
         {{ before.label_tag }}
         <div class="input-group">
             {{ before }}
+            {% if after.value and before.value %}
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary btn-sm"
                     name="next_due_date"
-                    {% if not after.value or not before.value %}
-                    disabled
-                    {% endif %}
                     aria-label="{% translate "Next interval" %}"
                     title="{% translate "Next interval" %}"
                 >
                     <span aria-hidden="true">&raquo;</span>
                 </button>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
