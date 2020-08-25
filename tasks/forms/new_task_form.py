@@ -1,10 +1,13 @@
+from django.contrib.auth.models import User
 from django.forms import DateInput, ModelForm
 
-from tasks.models import Task
+from tasks.models import Project, Task
+
+from ..templatetags.tasks_extras import user_str
 
 
 class NewTaskForm(ModelForm):
-    def __init__(self, *args, project_choices, assignee_choices, **kwargs):
+    def __init__(self, *args, user, **kwargs):
         super(NewTaskForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs["class"] = "form-control"
@@ -12,8 +15,11 @@ class NewTaskForm(ModelForm):
         # TODO: There should be a better way of doing this,
         # maybe look at limit_choices_to:
         # https://docs.djangoproject.com/en/3.1/ref/models/fields/#django.db.models.ForeignKey.limit_choices_to
-        self.fields["project"].choices = project_choices or []
-        self.fields["assignee"].choices = assignee_choices or []
+        projects = Project.objects.visible_to_user(user)
+        project_choices = [(project.id, str(project)) for project in projects]
+        assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
+        self.fields["project"].choices = [("", "")] + (project_choices or [])
+        self.fields["assignee"].choices = [("", "")] + (assignee_choices or [])
 
     class Meta:
         model = Task

@@ -62,27 +62,14 @@ def index(request):
 
 @login_required
 def new_task(request):
-    projects = Project.objects.visible_to_user(request.user)
-    project_choices = [(project.id, str(project)) for project in projects]
-    assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
-    form = NewTaskForm(
-        project_choices=project_choices, assignee_choices=assignee_choices
-    )
+    form = NewTaskForm(user=request.user)
     return render(request, "tasks/new.html", {"user": request.user, "form": form})
 
 
 @login_required
 def copy_task(request, task_id):
     task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
-    projects = Project.objects.visible_to_user(request.user)
-    project_choices = [(project.id, str(project)) for project in projects]
-    assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
-    form = NewTaskForm(
-        None,
-        instance=task,
-        project_choices=project_choices,
-        assignee_choices=assignee_choices,
-    )
+    form = NewTaskForm(None, instance=task, user=request.user)
     return render(request, "tasks/new.html", {"user": request.user, "form": form})
 
 
@@ -100,15 +87,7 @@ def task_detail(request, task_id):
 @login_required
 def edit_task(request, task_id):
     task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
-    projects = Project.objects.visible_to_user(request.user)
-    project_choices = [(project.id, str(project)) for project in projects]
-    assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
-    form = NewTaskForm(
-        request.POST or None,
-        instance=task,
-        project_choices=project_choices,
-        assignee_choices=assignee_choices,
-    )
+    form = NewTaskForm(request.POST or None, instance=task, user=request.user)
 
     if request.method == "POST":
         if form.is_valid():
@@ -152,12 +131,7 @@ def edit_task(request, task_id):
 @login_required
 @transaction.atomic
 def create_task(request):
-    projects = Project.objects.visible_to_user(request.user)
-    project_choices = [(project.id, str(project)) for project in projects]
-    assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
-    form = NewTaskForm(
-        request.POST, project_choices=project_choices, assignee_choices=assignee_choices
-    )
+    form = NewTaskForm(request.POST, user=request.user)
     if form.is_valid():
         project = (
             Project.objects.visible_to_user(request.user)
