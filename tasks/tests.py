@@ -69,14 +69,23 @@ class ModelTests(TestCase):
     def test_task_sort_by_status(self):
         """Tasks are sorted by status descending"""
 
+        user = User.objects.create_user("testuser", password="test")
+
         project = Project(title="Test Project")
         project.save()
-        open_task = Task(project=project, status="open", title="open_task")
+        open_task = Task(
+            project=project, created_by=user, status="open", title="open_task"
+        )
         open_task.save()
-        done_task = Task(project=project, status="done", title="done_task")
+        done_task = Task(
+            project=project, created_by=user, status="done", title="done_task"
+        )
         done_task.save()
         in_progress_task = Task(
-            project=project, status="in_progress", title="in_progress_task"
+            project=project,
+            created_by=user,
+            status="in_progress",
+            title="in_progress_task",
         )
         in_progress_task.save()
 
@@ -86,16 +95,24 @@ class ModelTests(TestCase):
     def test_task_sort_by_due_date(self):
         """Tasks are sorted by due date ascending, nulls last"""
 
+        user = User.objects.create_user("testuser", password="test")
+
         project = Project(title="Test Project")
         project.save()
 
-        task_null = Task(project=project, due_date=None, title="null")
+        task_null = Task(project=project, created_by=user, due_date=None, title="null")
         task_null.save()
-        task_5 = Task(project=project, due_date="2020-01-05", title="5")
+        task_5 = Task(
+            project=project, created_by=user, due_date="2020-01-05", title="5"
+        )
         task_5.save()
-        task_1 = Task(project=project, due_date="2020-01-01", title="1")
+        task_1 = Task(
+            project=project, created_by=user, due_date="2020-01-01", title="1"
+        )
         task_1.save()
-        task_10 = Task(project=project, due_date="2020-01-10", title="10")
+        task_10 = Task(
+            project=project, created_by=user, due_date="2020-01-10", title="10"
+        )
         task_10.save()
 
         tasks = Task.objects.sorted_for_dashboard().all()
@@ -104,13 +121,16 @@ class ModelTests(TestCase):
     def test_task_sort_by_priority(self):
         """Tasks are sorted by priority descending"""
 
+        user = User.objects.create_user("testuser", password="test")
+
         project = Project(title="Test Project")
         project.save()
-        normal_task = Task(project=project, priority=0, title="normal")
+
+        normal_task = Task(project=project, created_by=user, priority=0, title="normal")
         normal_task.save()
-        high_task = Task(project=project, priority=1, title="high")
+        high_task = Task(project=project, created_by=user, priority=1, title="high")
         high_task.save()
-        low_task = Task(project=project, priority=-1, title="low")
+        low_task = Task(project=project, created_by=user, priority=-1, title="low")
         low_task.save()
 
         tasks = Task.objects.sorted_for_dashboard().all()
@@ -128,9 +148,11 @@ class ModelTests(TestCase):
         hidden_project = Project(title="Hidden Project")
         hidden_project.save()
 
-        visible_task = Task(project=visible_project, title="Visible Task")
+        visible_task = Task(
+            project=visible_project, created_by=user, title="Visible Task"
+        )
         visible_task.save()
-        hidden_task = Task(project=hidden_project, title="Hidden Task")
+        hidden_task = Task(project=hidden_project, created_by=user, title="Hidden Task")
         hidden_task.save()
 
         tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
@@ -147,7 +169,7 @@ class ModelTests(TestCase):
         tomorrow = datetime.now() + timedelta(days=1)
         project.members.add(user, through_defaults={"expires_at": tomorrow})
 
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
@@ -164,7 +186,7 @@ class ModelTests(TestCase):
         yesterday = datetime.now() - timedelta(days=1)
         project.members.add(user, through_defaults={"expires_at": yesterday})
 
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
@@ -178,7 +200,7 @@ class ModelTests(TestCase):
         project = Project(title="Test Project")
         project.save()
 
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
@@ -196,11 +218,11 @@ class ViewsTests(TransactionTestCase):
     def test_index(self):
         """Index lists tasks"""
 
-        User.objects.create_user("testuser", password="test", is_superuser=True)
+        user = User.objects.create_user("testuser", password="test", is_superuser=True)
 
         project = Project(title="Test Project")
         project.save()
-        task = Task(project=project, title="Test Task", priority=-1)
+        task = Task(project=project, created_by=user, title="Test Task", priority=-1)
         task.save()
 
         client = Client()
@@ -215,15 +237,19 @@ class ViewsTests(TransactionTestCase):
     def test_index_filter(self):
         """Tasks can be filtered by project"""
 
-        User.objects.create_user("testuser", password="test", is_superuser=True)
+        user = User.objects.create_user("testuser", password="test", is_superuser=True)
 
         project1 = Project(title="Test Project 1")
         project1.save()
-        task1 = Task(project=project1, title="Test Task 1", priority=-1)
+        task1 = Task(
+            project=project1, created_by=user, title="Test Task 1", priority=-1
+        )
         task1.save()
         project2 = Project(title="Test Project 2")
         project2.save()
-        task2 = Task(project=project2, title="Test Task 2", priority=-1)
+        task2 = Task(
+            project=project2, created_by=user, title="Test Task 2", priority=-1
+        )
         task2.save()
 
         client = Client()
@@ -259,14 +285,14 @@ class ViewsTests(TransactionTestCase):
     def test_index_filter_by_tag(self):
         """Tasks can be filtered by tag"""
 
-        User.objects.create_user("testuser", password="test", is_superuser=True)
+        user = User.objects.create_user("testuser", password="test", is_superuser=True)
 
         project1 = Project(title="Test Project 1")
         project1.save()
-        task1 = Task(project=project1, title="Test Task 1", priority=0)
+        task1 = Task(project=project1, created_by=user, title="Test Task 1", priority=0)
         task1.save()
         task1.tags.add("foo", "bar")
-        task2 = Task(project=project1, title="Test Task 2", priority=0)
+        task2 = Task(project=project1, created_by=user, title="Test Task 2", priority=0)
         task2.save()
         task2.tags.add("bar", "qux")
 
@@ -327,7 +353,7 @@ class ViewsTests(TransactionTestCase):
         project = Project(title="Test Project")
         project.save()
         project.members.add(user)
-        task = Task(project=project, title="Test Task", priority=2)
+        task = Task(project=project, created_by=user, title="Test Task", priority=2)
         task.save()
 
         client = Client()
@@ -350,11 +376,11 @@ class ViewsTests(TransactionTestCase):
     def test_copy_not_member(self):
         """Copy task form is not shown if user is not member"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         client = Client()
@@ -375,7 +401,7 @@ class ViewsTests(TransactionTestCase):
         project2 = Project(title="Hidden Project")
         project2.save()
 
-        task = Task(project=project1, title="Test Task")
+        task = Task(project=project1, created_by=user, title="Test Task")
         task.save()
 
         client = Client()
@@ -421,6 +447,7 @@ class ViewsTests(TransactionTestCase):
         self.assertEqual(task.project, project)
         self.assertEqual(task.priority, 2)
         self.assertEqual(set(task.tags.names()), set(["foo", "bar"]))
+        self.assertEqual(task.created_by, user)
 
     def test_create_not_member(self):
         """New task is not created for a project the user is not member in"""
@@ -482,11 +509,14 @@ class ViewsTests(TransactionTestCase):
         """Task details are rendered"""
 
         user = User.objects.create_user("testuser", password="test")
+        task_creator = User.objects.create_user("task.creator", password="test")
 
         project = Project(title="Test Project")
         project.save()
         project.members.add(user)
-        task = Task(project=project, title="Test Task", priority=2)
+        task = Task(
+            project=project, created_by=task_creator, title="Test Task", priority=2
+        )
         task.save()
 
         client = Client()
@@ -496,15 +526,16 @@ class ViewsTests(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Task")
         self.assertContains(response, "HIGHEST")
+        self.assertContains(response, "task.creator")
 
     def test_detail_not_member(self):
         """Task details are rendered"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         client = Client()
@@ -528,7 +559,7 @@ class ViewsTests(TransactionTestCase):
         project = Project(title="Test Project")
         project.save()
         project.members.add(user)
-        task = Task(project=project, title="Test Task", priority=2)
+        task = Task(project=project, created_by=user, title="Test Task", priority=2)
         task.save()
 
         client = Client()
@@ -551,7 +582,7 @@ class ViewsTests(TransactionTestCase):
         project2 = Project(title="Hidden Project")
         project2.save()
 
-        task = Task(project=project1, title="Test Task", priority=2)
+        task = Task(project=project1, created_by=user, title="Test Task", priority=2)
         task.save()
 
         client = Client()
@@ -564,11 +595,11 @@ class ViewsTests(TransactionTestCase):
     def test_edit_not_member(self):
         """Task edit form is not rendered if the user is not project member"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
-        task = Task(project=project, title="Test Task", priority=2)
+        task = Task(project=project, created_by=user, title="Test Task", priority=2)
         task.save()
 
         client = Client()
@@ -581,11 +612,12 @@ class ViewsTests(TransactionTestCase):
         """Task is updated"""
 
         user = User.objects.create_user("testuser", password="test")
+        task_creator = User.objects.create_user("task.creator", password="test")
 
         project = Project(title="Test Project")
         project.save()
         project.members.add(user)
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=task_creator, title="Test Task")
         task.save()
 
         client = Client()
@@ -606,6 +638,7 @@ class ViewsTests(TransactionTestCase):
         task = Task.objects.get(pk=task.id)
         self.assertEqual(task.title, "New Title")
         self.assertEqual(task.priority, 2)
+        self.assertEqual(task.created_by, task_creator)
 
     def test_edit_post_not_valid(self):
         """Task is updated"""
@@ -615,7 +648,7 @@ class ViewsTests(TransactionTestCase):
         project = Project(title="Test Project")
         project.save()
         project.members.add(user)
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         client = Client()
@@ -659,7 +692,7 @@ class ViewsTests(TransactionTestCase):
         project.save()
         project.members.add(user)
 
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         client = Client()
@@ -678,7 +711,7 @@ class ViewsTests(TransactionTestCase):
         project.save()
         project.members.add(user)
 
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         client = Client()
@@ -698,12 +731,12 @@ class ViewsTests(TransactionTestCase):
     def test_create_note_not_member(self):
         """New note is not created if the user is not project member"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
 
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         client = Client()
@@ -732,7 +765,7 @@ class ViewsTests(TransactionTestCase):
         project.save()
         project.members.add(user)
 
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         note = Note(task=task, body="Test note")
@@ -747,12 +780,12 @@ class ViewsTests(TransactionTestCase):
     def test_edit_note_not_member(self):
         """Note edit form is not rendered if the user is not project member"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
 
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         note = Note(task=task, body="Test note")
@@ -773,7 +806,7 @@ class ViewsTests(TransactionTestCase):
         project.save()
         project.members.add(user)
 
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         note = Note(task=task, body="Test note")
@@ -793,12 +826,12 @@ class ViewsTests(TransactionTestCase):
     def test_edit_note_post_not_member(self):
         """Note is not updated if the user is not project member"""
 
-        User.objects.create_user("testuser", password="test")
+        user = User.objects.create_user("testuser", password="test")
 
         project = Project(title="Test Project")
         project.save()
 
-        task = Task(project=project, title="Test Task")
+        task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
         note = Note(task=task, body="Test note")
@@ -830,7 +863,7 @@ class ViewTestsWithTransaction(TransactionTestCase):
         project = Project(title="Test Project")
         project.save()
         project.members.add(user)
-        task = Task(project=project, title="Test Task V1")
+        task = Task(project=project, created_by=user, title="Test Task V1")
         task.save()
         task.refresh_from_db()
 

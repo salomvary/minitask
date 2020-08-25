@@ -206,6 +206,16 @@ class Task(VersionedMixin, models.Model):
         verbose_name=_("assignee"),
     )
 
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.DO_NOTHING,
+        blank=False,
+        null=False,
+        default=1,
+        related_name="created_tasks",
+        verbose_name=_("created by"),
+    )
+
     tags = TaggableManager(
         verbose_name=_("tags"),
         help_text=_("A comma-separated list of tags."),

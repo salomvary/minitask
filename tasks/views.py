@@ -165,6 +165,7 @@ def create_task(request):
             .first()
         )
         if project:
+            form.instance.created_by = request.user
             task = form.save()
             action = request.POST.get("action")
             if action == "copy":
