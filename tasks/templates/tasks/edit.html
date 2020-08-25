@@ -20,7 +20,14 @@ You can either <a href="{{ edit_link }}">reload and discard your changes</a> or
   {% csrf_token %}
   {% include "form.html" %}
 
-  <div class="text-right my-4">
+  <div class="my-4 d-flex align-items-center justify-content-end">
+    {% comment %}
+    Placing the Save button first makes it the default one when hitting enter.
+    Flexbox is used to make it visually the last.
+    {% endcomment %}
+    <button class="btn btn-primary ml-3 order-12">
+      {% translate "Save" %}
+    </button>
     <a href="{% url 'detail' task.id %}">
       {% translate "Cancel" %}
     </a>
@@ -29,9 +36,6 @@ You can either <a href="{{ edit_link }}">reload and discard your changes</a> or
     </button>
     <button class="btn btn-secondary ml-3" name="action" value="new">
       {% translate "Save and new" %}
-    </button>
-    <button class="btn btn-primary ml-3">
-      {% translate "Save" %}
     </button>
   </div>
 </form>
