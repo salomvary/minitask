@@ -85,10 +85,10 @@ class TaskQuerySet(models.QuerySet):
         end)
     """
 
-    def sorted_for_dashboard(self):
+    def all_visible(self, is_archived=False):
         """Default sorting order for the dashboard"""
 
-        return (
+        query = (
             self.select_related("project")
             .prefetch_related("tags")
             .extra(select={"status_order": self.CASE_SQL})
@@ -96,6 +96,13 @@ class TaskQuerySet(models.QuerySet):
                 "-status_order", models.F("due_date").asc(nulls_last=True), "-priority"
             )
         )
+
+        if is_archived:
+            query = query.filter(is_archived=True)
+        else:
+            query = query.exclude(is_archived=True)
+
+        return query
 
     def filtered_by(
         self,
@@ -220,6 +227,10 @@ class Task(VersionedMixin, models.Model):
         verbose_name=_("tags"),
         help_text=_("A comma-separated list of tags."),
         blank=True,
+    )
+
+    is_archived = models.BooleanField(
+        default=False, blank=False, null=False, verbose_name=_("archived"),
     )
 
     class Meta:

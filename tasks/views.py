@@ -10,6 +10,7 @@ from ool import ConcurrentUpdate
 from .forms.new_task_form import NewTaskForm
 from .forms.note_form import NoteForm
 from .forms.task_filter_form import TaskFilterForm
+from .forms.archive_task_form import ArchiveTaskForm
 from .models import Note, Project, Task
 from .templatetags.tasks_extras import user_str
 
@@ -44,7 +45,7 @@ def index(request):
             assignee=form.cleaned_data.get("assignee"),
             tags=form.cleaned_data.get("tags"),
         )
-        .sorted_for_dashboard()
+        .all_visible(is_archived=form.cleaned_data.get("is_archived"))
         .all()
     )
 
@@ -77,10 +78,16 @@ def copy_task(request, task_id):
 def task_detail(request, task_id):
     task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
     note_form = NoteForm(request.POST)
+    archive_task_form = ArchiveTaskForm(None, instance=task)
     return render(
         request,
         "tasks/detail.html",
-        {"user": request.user, "task": task, "note_form": note_form},
+        {
+            "user": request.user,
+            "task": task,
+            "note_form": note_form,
+            "archive_task_form": archive_task_form,
+        },
     )
 
 
@@ -126,6 +133,36 @@ def edit_task(request, task_id):
             "tasks/edit.html",
             {"user": request.user, "task": task, "form": form},
         )
+
+
+@login_required
+def archive_task(request, task_id):
+    """Set the is_archived flag on a task"""
+
+    task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
+    form = ArchiveTaskForm(request.POST or None, instance=task)
+
+    if request.method == "POST":
+        if form.is_valid():
+            try:
+                form.save()
+            except ConcurrentUpdate:
+                return render(
+                    request,
+                    "tasks/detail.html",
+                    {
+                        "user": request.user,
+                        "task": task,
+                        "archive_task_form": form,
+                        "is_concurrent_update": True,
+                    },
+                    status=409,
+                )
+            return redirect("detail", task.id)
+        else:
+            return redirect("detail", task.id)
+    else:
+        return redirect("detail", task.id)
 
 
 @login_required
@@ -187,6 +224,7 @@ def edit_note(request, note_id):
 def create_note(request, task_id):
     task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
     form = NoteForm(request.POST)
+    archive_task_form = ArchiveTaskForm(None, instance=task)
     if request.method == "POST":
         if form.is_valid():
             form.instance.task = task
@@ -199,7 +237,12 @@ def create_note(request, task_id):
             return render(
                 request,
                 "tasks/detail.html",
-                {"user": request.user, "task": task, "note_form": form},
+                {
+                    "user": request.user,
+                    "task": task,
+                    "note_form": form,
+                    "archive_task_form": archive_task_form,
+                },
                 status=400,
             )
     else:

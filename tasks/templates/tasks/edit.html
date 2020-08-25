@@ -6,14 +6,7 @@
 <h2 class="my-3">{% trans "Editing task" %}</h2>
 
 {% if is_concurrent_update %}
-<div class="alert alert-danger" role="alert">
-{% url 'edit' task.id as edit_link %}
-{% blocktranslate %}
-The task has been modified (possibly by someone else) while you were editing.<br>
-You can either <a href="{{ edit_link }}">reload and discard your changes</a> or
-<a href="{{ edit_link }}" target="_blank">edit the latest version in a new window</a>.
-{% endblocktranslate %}
-</div>
+{% include "tasks/concurrent_update_alert.html" %}
 {% endif %}
 
 <form method="POST" action="{% url 'edit' task.id %}">

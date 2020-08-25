@@ -89,7 +89,7 @@ class ModelTests(TestCase):
         )
         in_progress_task.save()
 
-        tasks = Task.objects.sorted_for_dashboard().all()
+        tasks = Task.objects.all_visible().all()
         self.assertEqual(list(tasks), [in_progress_task, open_task, done_task])
 
     def test_task_sort_by_due_date(self):
@@ -115,7 +115,7 @@ class ModelTests(TestCase):
         )
         task_10.save()
 
-        tasks = Task.objects.sorted_for_dashboard().all()
+        tasks = Task.objects.all_visible().all()
         self.assertEqual(list(tasks), [task_1, task_5, task_10, task_null])
 
     def test_task_sort_by_priority(self):
@@ -133,7 +133,7 @@ class ModelTests(TestCase):
         low_task = Task(project=project, created_by=user, priority=-1, title="low")
         low_task.save()
 
-        tasks = Task.objects.sorted_for_dashboard().all()
+        tasks = Task.objects.all_visible().all()
         self.assertEqual(list(tasks), [high_task, normal_task, low_task])
 
     def test_tasks_only_for_members(self):
@@ -155,7 +155,7 @@ class ModelTests(TestCase):
         hidden_task = Task(project=hidden_project, created_by=user, title="Hidden Task")
         hidden_task.save()
 
-        tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
+        tasks = Task.objects.all_visible().visible_to_user(user).all()
         self.assertEqual(list(tasks), [visible_task])
 
     def test_tasks_not_yet_expired_membership(self):
@@ -172,7 +172,7 @@ class ModelTests(TestCase):
         task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
-        tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
+        tasks = Task.objects.all_visible().visible_to_user(user).all()
         self.assertEqual(list(tasks), [task])
 
     def test_tasks_expired_membership(self):
@@ -189,7 +189,7 @@ class ModelTests(TestCase):
         task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
-        tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
+        tasks = Task.objects.all_visible().visible_to_user(user).all()
         self.assertEqual(list(tasks), [])
 
     def test_tasks_superusers_see_all(self):
@@ -203,7 +203,7 @@ class ModelTests(TestCase):
         task = Task(project=project, created_by=user, title="Test Task")
         task.save()
 
-        tasks = Task.objects.sorted_for_dashboard().visible_to_user(user).all()
+        tasks = Task.objects.all_visible().visible_to_user(user).all()
         self.assertEqual(list(tasks), [task])
 
 
@@ -262,6 +262,58 @@ class ViewsTests(TransactionTestCase):
         )
         self.assertContains(response, "Test Task 1")
         self.assertNotContains(response, "Test Task 2")
+
+    def test_index_no_archived(self):
+        """Archived tasks are not shown"""
+
+        user = User.objects.create_user("testuser", password="test", is_superuser=True)
+
+        project1 = Project(title="Test Project 1")
+        project1.save()
+        task1 = Task(
+            project=project1, created_by=user, title="Archived Task", is_archived=True
+        )
+        task1.save()
+        project2 = Project(title="Test Project 2")
+        project2.save()
+        task2 = Task(
+            project=project2, created_by=user, title="Normal Task", is_archived=False
+        )
+        task2.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        response = client.get("/")
+
+        self.assertContains(response, "Normal Task")
+        self.assertNotContains(response, "Archived Task")
+
+    def test_index_show_archived(self):
+        """Archived tasks are shown when explicitly requested"""
+
+        user = User.objects.create_user("testuser", password="test", is_superuser=True)
+
+        project1 = Project(title="Test Project 1")
+        project1.save()
+        task1 = Task(
+            project=project1, created_by=user, title="Archived Task", is_archived=True
+        )
+        task1.save()
+        project2 = Project(title="Test Project 2")
+        project2.save()
+        task2 = Task(
+            project=project2, created_by=user, title="Normal Task", is_archived=False
+        )
+        task2.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        response = client.get("/?is_archived=true")
+
+        self.assertNotContains(response, "Normal Task")
+        self.assertContains(response, "Archived Task")
 
     def test_index_filter_form_projects(self):
         """Project filter dropdown contains projects available to the user"""
@@ -448,6 +500,7 @@ class ViewsTests(TransactionTestCase):
         self.assertEqual(task.priority, 2)
         self.assertEqual(set(task.tags.names()), set(["foo", "bar"]))
         self.assertEqual(task.created_by, user)
+        self.assertEqual(task.is_archived, False)
 
     def test_create_not_member(self):
         """New task is not created for a project the user is not member in"""
@@ -515,7 +568,11 @@ class ViewsTests(TransactionTestCase):
         project.save()
         project.members.add(user)
         task = Task(
-            project=project, created_by=task_creator, title="Test Task", priority=2
+            project=project,
+            created_by=task_creator,
+            title="Test Task",
+            priority=2,
+            is_archived=True,
         )
         task.save()
 
@@ -527,6 +584,7 @@ class ViewsTests(TransactionTestCase):
         self.assertContains(response, "Test Task")
         self.assertContains(response, "HIGHEST")
         self.assertContains(response, "task.creator")
+        self.assertContains(response, "ARCHIVED")
 
     def test_detail_not_member(self):
         """Task details are rendered"""
@@ -617,7 +675,12 @@ class ViewsTests(TransactionTestCase):
         project = Project(title="Test Project")
         project.save()
         project.members.add(user)
-        task = Task(project=project, created_by=task_creator, title="Test Task")
+        task = Task(
+            project=project,
+            created_by=task_creator,
+            title="Test Task",
+            is_archived=True,
+        )
         task.save()
 
         client = Client()
@@ -639,6 +702,7 @@ class ViewsTests(TransactionTestCase):
         self.assertEqual(task.title, "New Title")
         self.assertEqual(task.priority, 2)
         self.assertEqual(task.created_by, task_creator)
+        self.assertEqual(task.is_archived, True)
 
     def test_edit_post_not_valid(self):
         """Task is updated"""
@@ -664,6 +728,63 @@ class ViewsTests(TransactionTestCase):
 
         # self.assertEqual(response.status_code, 400)
         self.assertContains(response, "New Title", status_code=400)
+
+    def test_archive_post_unauthenticated(self):
+        """Archiving task redirects to login when unauthenticated"""
+
+        client = Client()
+        response = client.post(
+            "/tasks/1/archive", {"version": "0", "is_archived": "true"},
+        )
+
+        self.assertRedirects(response, "/accounts/login/?next=/tasks/1/archive", 302)
+
+    def test_archive_post_not_member(self):
+        """Task is not archived if the user is not project member"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+
+        task = Task(project=project, created_by=user, title="Test Task")
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post(
+            "/tasks/" + str(task.id) + "/archive",
+            {"version": "0", "is_archived": "true"},
+        )
+
+        self.assertEqual(response.status_code, 404)
+        task.refresh_from_db()
+        self.assertEqual(task.is_archived, False)
+
+    def test_archive_post(self):
+        """Task is archived"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        project.members.add(user)
+
+        task = Task(
+            project=project, created_by=user, title="Test Task", is_archived=False,
+        )
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post(
+            "/tasks/" + str(task.id) + "/archive",
+            {"version": "0", "is_archived": "true"},
+        )
+
+        self.assertRedirects(response, "/tasks/" + str(task.id), 302)
+        task.refresh_from_db()
+        self.assertEqual(task.is_archived, True)
 
     def test_create_note_unauthenticated(self):
         """Creating note redirects to login when unauthenticated"""
@@ -902,3 +1023,38 @@ class ViewTestsWithTransaction(TransactionTestCase):
         self.assertContains(response, "The task has been modified", status_code=409)
         updated_task = Task.objects.get(pk=task.id)
         self.assertEqual(updated_task.title, "Test Task V2")
+
+    def test_archive_concurrent_post(self):
+        """Concurrent archivals are prevented"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        project.members.add(user)
+        task = Task(project=project, created_by=user, title="Test Task")
+        task.save()
+        task.refresh_from_db()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        # First update is ok
+        response = client.post(
+            "/tasks/" + str(task.id) + "/archive",
+            {"version": task.version, "is_archived": "true",},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        task_updated = Task.objects.get(pk=task.id)
+        self.assertEqual(task_updated.is_archived, True)
+
+        # Second update concurrently should be prevented
+        response = client.post(
+            "/tasks/" + str(task.id) + "/archive",
+            {"version": task.version, "is_archived": "false",},
+        )
+
+        self.assertContains(response, "The task has been modified", status_code=409)
+        updated_task = Task.objects.get(pk=task.id)
+        self.assertEqual(updated_task.is_archived, True)

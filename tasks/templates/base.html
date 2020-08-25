@@ -44,5 +44,14 @@
     <main role="main" class="{% block container_class %}container{% endblock %} p-3">
       {% block content %} Body content {% endblock %}
     </main>
+    <footer class="bg-dark text-light text-center p-3">
+      <p>
+        Powered by <a href="https://github.com/salomvary/minitask">Minitask</a>
+        by <a href="https://twitter.com/salomvary">@salomvary</a>.
+      </p>
+      <p>
+        <a href="{% url 'index' %}?is_archived=true">{% translate "Archived tasks" %}</a>
+      </p>
+    </footer>
   </body>
 </html>

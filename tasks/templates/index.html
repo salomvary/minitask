@@ -5,6 +5,10 @@
 {% block container_class %}container-fluid{% endblock %}
 {% block content %}
 
+{% if form.is_archived.value %}
+<h2 class="my-3">{% trans "Archived tasks" %}</h2>
+{% endif %}
+
 {% include "task_filter_form.html" %}
 
 <table class="table table-striped my-4">

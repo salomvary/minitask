@@ -97,6 +97,8 @@ class TaskFilterForm(forms.Form):
         # widget=forms.Select(attrs={"class": "custom-select custom-select-sm"}),
     )
 
+    is_archived = forms.BooleanField(required=False, widget=forms.HiddenInput())
+
     def previous_due_date(self):
         """Change the due date interval to the previous"""
 

@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<div class="alert alert-danger" role="alert">
+    {% url 'edit' task.id as edit_link %}
+    {% blocktranslate %}
+    The task has been modified (possibly by someone else) while you were editing.<br>
+    You can either <a href="{{ edit_link }}">reload and discard your changes</a> or
+    <a href="{{ edit_link }}" target="_blank">edit the latest version in a new window</a>.
+    {% endblocktranslate %}
+</div>

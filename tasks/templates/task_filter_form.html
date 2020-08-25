@@ -1,6 +1,8 @@
 {% load i18n %}
 
 <form action="{% url 'index' %}" class="form">
+    {{ form.is_archived }}
+
     <div class="form-row">
         {% comment %}
         The primary submit button has to be the first one in order for
