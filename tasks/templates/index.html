@@ -33,7 +33,7 @@
         <td>{{task.assignee|user_str|default_if_none:""}}</td>
         <td class="text-nowrap">{% task_priority_badge task %}</td>
         <td>{% include "tags.html" with tags=task.tags %}</td>
-        <td class="text-nowrap">{{task.due_date}}</td>
+        <td class="text-nowrap">{{task.due_date|default_if_none:""}}</td>
         <td class="text-nowrap">{{task.created_at}}</td>
       </tr>
     {% endfor %}
