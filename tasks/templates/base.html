@@ -2,7 +2,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en_US">
+<html lang="en_US" class="h-100">
   <head>
     <meta charset="utf-8" />
     <title>{% block title %}{% endblock %} | Minitask</title>
@@ -11,7 +11,11 @@
     <link rel="stylesheet" href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}">
   </head>
 
-  <body>
+  {% comment %}
+  Making the body a 100% high flexbox allows pushing the footer to the
+  bottom even if the main content is not tall enough.
+  {% endcomment %}
+  <body class="h-100 d-flex flex-column">
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
       <span class="navbar-brand">Minitask</span>
       <ul class="navbar-nav mr-auto">
@@ -41,7 +45,7 @@
       </a>
       {% endif %}
     </nav>
-    <main role="main" class="{% block container_class %}container{% endblock %} p-3">
+    <main role="main" class="{% block container_class %}container{% endblock %} p-3 flex-grow-1">
       {% block content %} Body content {% endblock %}
     </main>
     <footer class="bg-dark text-light text-center p-3">
