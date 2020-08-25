@@ -53,7 +53,7 @@
         {% translate "assignee"|title %}
       </th>
       <td>
-        {{ task.assignee }}
+        {{ task.assignee|user_str|default_if_none:"" }}
       </td>
     </tr>
     <tr>
@@ -81,7 +81,7 @@
 {% for note in task.notes.all %}
   <section class="border-bottom pt-3" id="note-{{ note.id }}">
     <h4 class="h6">
-      {{ note.author }}
+      {{ note.author|user_str }}
       ∙ <span class="font-weight-normal">{{ note.created_at }}</span>
       ∙ <a href="{% url 'edit_note' note.id %}">{% translate "Edit" %}</a>
     </h4>

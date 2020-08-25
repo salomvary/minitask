@@ -128,6 +128,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "minitask.wsgi.application"
 
+FORMAT_MODULE_PATH = ["tasks.formats"]
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

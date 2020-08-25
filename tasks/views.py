@@ -11,6 +11,7 @@ from .forms.new_task_form import NewTaskForm
 from .forms.note_form import NoteForm
 from .forms.task_filter_form import TaskFilterForm
 from .models import Note, Project, Task
+from .templatetags.tasks_extras import user_str
 
 
 @login_required
@@ -19,7 +20,7 @@ def index(request):
 
     # Set up the filter form
     project_choices = [(project.id, str(project)) for project in projects]
-    assignee_choices = [(user.id, str(user)) for user in User.objects.all()]
+    assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
     form = TaskFilterForm(
         request.GET, project_choices=project_choices, assignee_choices=assignee_choices
     )
@@ -63,7 +64,10 @@ def index(request):
 def new_task(request):
     projects = Project.objects.visible_to_user(request.user)
     project_choices = [(project.id, str(project)) for project in projects]
-    form = NewTaskForm(project_choices=project_choices)
+    assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
+    form = NewTaskForm(
+        project_choices=project_choices, assignee_choices=assignee_choices
+    )
     return render(request, "tasks/new.html", {"user": request.user, "form": form})
 
 
@@ -72,7 +76,13 @@ def copy_task(request, task_id):
     task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
     projects = Project.objects.visible_to_user(request.user)
     project_choices = [(project.id, str(project)) for project in projects]
-    form = NewTaskForm(None, instance=task, project_choices=project_choices)
+    assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
+    form = NewTaskForm(
+        None,
+        instance=task,
+        project_choices=project_choices,
+        assignee_choices=assignee_choices,
+    )
     return render(request, "tasks/new.html", {"user": request.user, "form": form})
 
 
@@ -92,8 +102,12 @@ def edit_task(request, task_id):
     task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
     projects = Project.objects.visible_to_user(request.user)
     project_choices = [(project.id, str(project)) for project in projects]
+    assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
     form = NewTaskForm(
-        request.POST or None, instance=task, project_choices=project_choices
+        request.POST or None,
+        instance=task,
+        project_choices=project_choices,
+        assignee_choices=assignee_choices,
     )
 
     if request.method == "POST":
@@ -140,7 +154,10 @@ def edit_task(request, task_id):
 def create_task(request):
     projects = Project.objects.visible_to_user(request.user)
     project_choices = [(project.id, str(project)) for project in projects]
-    form = NewTaskForm(request.POST, project_choices=project_choices)
+    assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
+    form = NewTaskForm(
+        request.POST, project_choices=project_choices, assignee_choices=assignee_choices
+    )
     if form.is_valid():
         project = (
             Project.objects.visible_to_user(request.user)

@@ -1,4 +1,5 @@
 from django import template
+from ..formats import full_name_format
 
 register = template.Library()
 
@@ -31,3 +32,16 @@ def task_priority_badge(task):
         "priority": task.get_priority_display(),
         "class_name": TASK_PRIORITY_MAP.get(task.priority, "secondary"),
     }
+
+
+@register.filter(name="user_str")
+def user_str(user):
+    """User's full or partial name if available, username otherwise"""
+
+    if user:
+        if user.last_name or user.first_name:
+            return full_name_format(user.first_name, user.last_name)
+        else:
+            return user.username
+    else:
+        return user
