@@ -230,8 +230,8 @@ msgid ""
 msgstr ""
 "\n"
 "    Nincs találat.\n"
-"    Próbálj meg pár szűrőt törölni, vagy  <a href=\"%(clear_link)s\">töröld "
-"az mindet</a>."
+"    Próbálj meg pár szűrőt törölni, vagy <a href=\"%(clear_link)s\">kattints ide</a>, hogy töröld "
+"mindet."
 
 #: tasks/templates/index.html:59
 #, python-format
