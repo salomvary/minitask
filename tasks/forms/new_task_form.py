@@ -1,7 +1,7 @@
-from django.contrib.auth.models import User
-from django.forms import DateInput, ModelForm
 from django.conf import settings
+from django.forms import DateInput, ModelForm
 
+from accounts.models import User
 from tasks.models import Project, Task
 
 from ..templatetags.tasks_extras import user_str

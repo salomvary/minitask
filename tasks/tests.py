@@ -1,7 +1,8 @@
 from datetime import date, datetime, timedelta
 
-from django.contrib.auth.models import User
 from django.test import Client, TestCase, TransactionTestCase
+
+from accounts.models import User
 
 from .forms.task_filter_form import TaskFilterForm
 from .models import Note, Project, Task
