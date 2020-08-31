@@ -207,3 +207,6 @@ LOGIN_URL = "/accounts/login/"
 
 REQUIRE_DUE_DATE = os.environ.get("REQUIRE_DUE_DATE", False)
 """Require a non-blank due date on tasks"""
+
+REQUIRE_ASSIGNEE = os.environ.get("REQUIRE_ASSIGNEE", False)
+"""Require a non-blank assignee on tasks"""

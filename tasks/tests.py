@@ -469,6 +469,22 @@ class ViewsTests(TransactionTestCase):
         self.assertContains(response, "New task")
         self.assertInHTML("<a href='/'>Cancel</a>", response.content.decode("utf-8"))
 
+    def test_new_assignee_required(self):
+        """Default assignee is the logged in user when assignee is required"""
+
+        with self.settings(REQUIRE_ASSIGNEE=True):
+            user = User.objects.create_user("testuser", password="test")
+
+            client = Client()
+            client.login(username="testuser", password="test")
+            response = client.get("/tasks/new")
+
+            self.assertEqual(response.status_code, 200)
+            self.assertInHTML(
+                f"<option value={user.id} selected>testuser</option>",
+                response.content.decode("utf-8"),
+            )
+
     def test_new_back_to_referer(self):
         """New task form links back to previous page"""
 
@@ -666,6 +682,36 @@ class ViewsTests(TransactionTestCase):
                     "priority": 2,
                     "tags": "",
                     "due_date": "",
+                },
+            )
+
+            self.assertEqual(response.status_code, 400)
+            tasks = Task.objects.all()
+            self.assertEqual(list(tasks), [])
+
+    def test_create_assignee_required(self):
+        """New task is not created if assignee is required but not provided"""
+
+        with self.settings(REQUIRE_ASSIGNEE=True):
+
+            user = User.objects.create_user("testuser", password="test")
+
+            project = Project(title="Test Project")
+            project.save()
+            project.members.add(user)
+
+            client = Client()
+            client.login(username="testuser", password="test")
+            response = client.post(
+                "/tasks",
+                {
+                    "version": 0,
+                    "project": project.id,
+                    "title": "Test Task",
+                    "status": "open",
+                    "priority": 2,
+                    "tags": "",
+                    "assignee": "",
                 },
             )
 
@@ -881,6 +927,45 @@ class ViewsTests(TransactionTestCase):
                     "status": "open",
                     "tags": "",
                     "due_date": "",
+                },
+            )
+
+            self.assertEqual(response.status_code, 400)
+            task = Task.objects.get(pk=task.id)
+            self.assertEqual(task.title, "Test Task")
+
+    def test_edit_post_assignee_required(self):
+        """Task is not updated if due date is required but not provided"""
+
+        with self.settings(REQUIRE_ASSIGNEE=True):
+
+            user = User.objects.create_user("testuser", password="test")
+
+            project = Project(title="Test Project")
+            project.save()
+            project.members.add(user)
+
+            task = Task(
+                project=project,
+                created_by=user,
+                title="Test Task",
+                is_archived=True,
+                due_date=datetime.now(),
+            )
+            task.save()
+
+            client = Client()
+            client.login(username="testuser", password="test")
+            response = client.post(
+                f"/tasks/{task.id}/edit",
+                {
+                    "version": 0,
+                    "project": project.id,
+                    "title": "New Title",
+                    "priority": 2,
+                    "status": "open",
+                    "tags": "",
+                    "assignee": "",
                 },
             )
 

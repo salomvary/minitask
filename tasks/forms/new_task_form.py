@@ -8,8 +8,15 @@ from ..templatetags.tasks_extras import user_str
 
 
 class NewTaskForm(ModelForm):
-    def __init__(self, *args, user, **kwargs):
-        super(NewTaskForm, self).__init__(*args, **kwargs)
+    def __init__(self, *args, user, initial=None, **kwargs):
+        # Set initial assignee when required
+        if settings.REQUIRE_ASSIGNEE:
+            initial = initial.copy() if initial else {}
+            initial["assignee"] = user.id
+
+        super(NewTaskForm, self).__init__(*args, initial=initial, **kwargs)
+
+        # Make all widgets look like Bootstrap form controls
         for visible in self.visible_fields():
             visible.field.widget.attrs["class"] = "form-control"
 
@@ -21,7 +28,10 @@ class NewTaskForm(ModelForm):
         assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
         self.fields["project"].choices = [("", "")] + (project_choices or [])
         self.fields["assignee"].choices = [("", "")] + (assignee_choices or [])
+
+        # Some fields can be configured to be required
         self.fields["due_date"].required = settings.REQUIRE_DUE_DATE
+        self.fields["assignee"].required = settings.REQUIRE_ASSIGNEE
 
     class Meta:
         model = Task
