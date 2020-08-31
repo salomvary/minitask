@@ -10,7 +10,7 @@
   {% include "form.html" %}
 
   <div class="text-right my-4">
-    <a href="{% url 'index' %}">
+    <a href="{{ cancel_url }}">
       {% translate "Cancel" %}
     </a>
     <button class="btn btn-secondary ml-3" name="action" value="copy">

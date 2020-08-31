@@ -1,16 +1,20 @@
+from urllib.parse import SplitResult, urlsplit
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import Http404
+from django.http.request import validate_host
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from ool import ConcurrentUpdate
 
+from .forms.archive_task_form import ArchiveTaskForm
 from .forms.new_task_form import NewTaskForm
 from .forms.note_form import NoteForm
 from .forms.task_filter_form import TaskFilterForm
-from .forms.archive_task_form import ArchiveTaskForm
 from .models import Note, Project, Task
 from .templatetags.tasks_extras import user_str
 
@@ -68,14 +72,30 @@ def index(request):
 @login_required
 def new_task(request):
     form = NewTaskForm(user=request.user)
-    return render(request, "tasks/new.html", {"user": request.user, "form": form})
+    local_referrer = get_local_referrer(request)
+    self_url = reverse("new")
+    cancel_url = (
+        local_referrer
+        if local_referrer and local_referrer != self_url
+        else reverse("index")
+    )
+    return render(
+        request,
+        "tasks/new.html",
+        {"user": request.user, "form": form, "cancel_url": cancel_url},
+    )
 
 
 @login_required
 def copy_task(request, task_id):
     task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
     form = NewTaskForm(None, instance=task, user=request.user)
-    return render(request, "tasks/new.html", {"user": request.user, "form": form})
+    cancel_url = reverse("detail", args=[task.id])
+    return render(
+        request,
+        "tasks/new.html",
+        {"user": request.user, "form": form, "cancel_url": cancel_url},
+    )
 
 
 @login_required
@@ -254,3 +274,31 @@ def render_task_edit(request, task, form, is_concurrent_update=False, **kwargs):
         },
         **kwargs
     )
+
+
+def get_local_referrer(request):
+    """Get the referrer URL if it is not external to this application"""
+
+    if "HTTP_REFERER" in request.META:
+        # Adopted from here:
+        # https://github.com/django/django/blob/7fc317ae736e8fda1aaf4d4ede84d95fffaf5281/django/http/request.py#L124-L130
+        allowed_hosts = settings.ALLOWED_HOSTS
+        if settings.DEBUG and not allowed_hosts:
+            allowed_hosts = [".localhost", "127.0.0.1", "[::1]"]
+
+        referrer = urlsplit(request.META["HTTP_REFERER"])
+
+        if validate_host(referrer.hostname, allowed_hosts):
+            # If the referrer header points to "ourselves", return a "safe copy"
+            # removing everything but the path+query+fragment part
+            return SplitResult(
+                scheme="",
+                netloc="",
+                path=referrer.path,
+                query=referrer.query,
+                fragment=referrer.fragment,
+            ).geturl()
+        else:
+            return None
+    else:
+        return None

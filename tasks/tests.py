@@ -467,6 +467,31 @@ class ViewsTests(TransactionTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "New task")
+        self.assertInHTML("<a href='/'>Cancel</a>", response.content.decode("utf-8"))
+
+    def test_new_back_to_referer(self):
+        """New task form links back to previous page"""
+
+        User.objects.create_user("testuser", password="test")
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        # Local referrer
+        response = client.get(
+            "/tasks/new", HTTP_REFERER="http://testserver:8000/tasks/1?foo=bar#asd"
+        )
+        self.assertInHTML(
+            "<a href='/tasks/1?foo=bar#asd'>Cancel</a>",
+            response.content.decode("utf-8"),
+        )
+
+        # External referrer
+        response = client.get(
+            "/tasks/new", HTTP_REFERER="http://facebook.com/tasks/1?foo=bar#asd"
+        )
+        self.assertInHTML("<a href='/'>Cancel</a>", response.content.decode("utf-8"))
+        self.assertNotContains(response, "facebook.com")
 
     def test_new_visible_projects(self):
         """New task form only contains visible projects"""
