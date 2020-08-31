@@ -23,13 +23,14 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY", "k@4+jg3h24i=#e6objmu6j4bf7@r62zckm=l23kg(2i!(@5%(+"
-)
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(distutils.util.strtobool(os.environ.get("DEBUG", "True")))
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "k@4+jg3h24i=#e6objmu6j4bf7@r62zckm=l23kg(2i!(@5%(+" if DEBUG else None,
+)
 
 # Enable Heroku specific logging
 # https://github.com/heroku/django-heroku/blob/master/django_heroku/core.py#L117
