@@ -97,15 +97,17 @@ If you don't configure a database, Minitask will use a local SQLite database. SQ
 
 ⚠️ This section is heavily work-in-progress.
 
+Don't forget to generate a long secret, eg. with `pwgen -sy 50` or your favorite password manager
+and set it with `SECRET_KEY=v3rys3cret` as seen below.
+
+
     # Extract project to /opt/minitask
     cd /opt/minitask
     apt install python3 python3-pip
     pip3 install -r requirements.txt
     # Re-run this every time you install a new Minitask version
-    SERVE_STATIC=true DEBUG=false python manage.py collectstatic
+    SECRET_KEY=v3rys3cret SERVE_STATIC=true DEBUG=false python manage.py collectstatic
     # Replace my.host.name with whatever domain name or ip address you use for accessing the application.
-    # Also don't forget to generate a long secret, eg. with `pwgen -sy 50` or your favorite password manager
-    # and set it with SECRET_KEY=v3rys3cret
     # You can add more configuration options hire, like LANGUAGE_CODE=hu-hu
     SERVE_STATIC=true ALLOWED_HOSTS=my.host.name DEBUG=false SECRET_KEY=v3rys3cret gunicorn --bind 0.0.0.0:8000 minitask.wsgi
     SECRET_KEY=v3rys3cret python manage.py createsuperuser
