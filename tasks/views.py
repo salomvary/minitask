@@ -1,8 +1,8 @@
 from urllib.parse import SplitResult, urlsplit
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import Http404
 from django.http.request import validate_host
@@ -17,6 +17,8 @@ from .forms.note_form import NoteForm
 from .forms.task_filter_form import TaskFilterForm
 from .models import Note, Project, Task
 from .templatetags.tasks_extras import user_str
+
+User = get_user_model()
 
 
 @login_required

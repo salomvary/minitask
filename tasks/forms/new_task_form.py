@@ -1,10 +1,12 @@
-from django.contrib.auth.models import User
-from django.forms import DateInput, ModelForm
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.forms import DateInput, ModelForm
 
 from tasks.models import Project, Task
 
 from ..templatetags.tasks_extras import user_str
+
+User = get_user_model()
 
 
 class NewTaskForm(ModelForm):
