@@ -23,7 +23,7 @@ jobs:
         black --check .
     - name: Lint with Pylint
       run: |
-        pylint auth minitask tasks
+        pylint accounts minitask tasks
     - name: Run tests
       run: |
         python manage.py test
