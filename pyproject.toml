@@ -3,6 +3,14 @@ name = "minitask"
 version = "1.0.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
+include = [
+    "manage.py"
+]
+packages = [
+    { include = "minitask" },
+    { include = "accounts" },
+    { include = "tasks" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
