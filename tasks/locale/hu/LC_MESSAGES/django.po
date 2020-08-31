@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-31 15:37+0200\n"
+"POT-Creation-Date: 2020-08-31 20:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,143 +54,143 @@ msgstr "Felelős"
 msgid "Tags"
 msgstr "Címkék"
 
-#: tasks/models.py:41 tasks/models.py:206 tasks/templates/index.html:18
+#: tasks/models.py:42 tasks/models.py:207 tasks/templates/index.html:18
 msgid "title"
 msgstr "cím"
 
-#: tasks/models.py:46 tasks/models.py:248
+#: tasks/models.py:47 tasks/models.py:249
 msgid "archived"
 msgstr "archivált"
 
-#: tasks/models.py:50 tasks/models.py:203 tasks/templates/index.html:17
+#: tasks/models.py:51 tasks/models.py:204 tasks/templates/index.html:17
 msgid "project"
 msgstr "projekt"
 
-#: tasks/models.py:51
+#: tasks/models.py:52
 msgid "projects"
 msgstr "projektek"
 
-#: tasks/models.py:64
+#: tasks/models.py:65
 msgid "expires at"
 msgstr "lejárat"
 
-#: tasks/models.py:67
+#: tasks/models.py:68
 msgid "project membership"
 msgstr "projekt résztvevő"
 
-#: tasks/models.py:68
+#: tasks/models.py:69
 msgid "project memberships"
 msgstr "projekt résztvevők"
 
-#: tasks/models.py:72
+#: tasks/models.py:73
 #, python-format
 msgid "until %(expires_at)s"
 msgstr "%(expires_at)s-ig"
 
-#: tasks/models.py:74
+#: tasks/models.py:75
 msgid "forever"
 msgstr "örökké"
 
-#: tasks/models.py:78
+#: tasks/models.py:79
 #, python-format
 msgid "'%(user)s' member of '%(project)s' project %(expires_at)s"
 msgstr "'%(user)s' %(expires_at)s tagja a(z) '%(project)s' projektnek"
 
-#: tasks/models.py:184
+#: tasks/models.py:185
 msgid "open"
 msgstr "nyitott"
 
-#: tasks/models.py:185
+#: tasks/models.py:186
 msgid "in progress"
 msgstr "folyamatban"
 
-#: tasks/models.py:186
+#: tasks/models.py:187
 msgid "done"
 msgstr "kész"
 
-#: tasks/models.py:190
+#: tasks/models.py:191
 msgid "lowest"
 msgstr "legalacsonyabb"
 
-#: tasks/models.py:191
+#: tasks/models.py:192
 msgid "low"
 msgstr "alacsony"
 
-#: tasks/models.py:192
+#: tasks/models.py:193
 msgid "normal"
 msgstr "normál"
 
-#: tasks/models.py:193
+#: tasks/models.py:194
 msgid "high"
 msgstr "magas"
 
-#: tasks/models.py:194
+#: tasks/models.py:195
 msgid "highest"
 msgstr "legmagasabb"
 
-#: tasks/models.py:208 tasks/templates/tasks/detail.html:31
+#: tasks/models.py:209 tasks/templates/tasks/detail.html:31
 msgid "description"
 msgstr "leírás"
 
-#: tasks/models.py:210 tasks/templates/index.html:23
+#: tasks/models.py:211 tasks/templates/index.html:23
 #: tasks/templates/tasks/detail.html:55
 msgid "due date"
 msgstr "határidő"
 
-#: tasks/models.py:212 tasks/models.py:290 tasks/templates/index.html:24
+#: tasks/models.py:213 tasks/models.py:291 tasks/templates/index.html:24
 #: tasks/templates/tasks/detail.html:63
 msgid "created at"
 msgstr "létrehozva"
 
-#: tasks/models.py:215 tasks/templates/index.html:19
+#: tasks/models.py:216 tasks/templates/index.html:19
 #: tasks/templates/tasks/detail.html:39
 msgid "status"
 msgstr "állapot"
 
-#: tasks/models.py:219 tasks/templates/index.html:21
+#: tasks/models.py:220 tasks/templates/index.html:21
 #: tasks/templates/tasks/detail.html:47
 msgid "priority"
 msgstr "prioritás"
 
-#: tasks/models.py:228 tasks/templates/index.html:20
+#: tasks/models.py:229 tasks/templates/index.html:20
 #: tasks/templates/tasks/detail.html:71
 msgid "assignee"
 msgstr "felelős"
 
-#: tasks/models.py:238 tasks/templates/tasks/detail.html:79
+#: tasks/models.py:239 tasks/templates/tasks/detail.html:79
 msgid "created by"
 msgstr "létrehozta"
 
-#: tasks/models.py:242 tasks/templates/index.html:22
+#: tasks/models.py:243 tasks/templates/index.html:22
 #: tasks/templates/tasks/detail.html:87
 msgid "tags"
 msgstr "Címkék"
 
-#: tasks/models.py:243
+#: tasks/models.py:244
 msgid "A comma-separated list of tags."
 msgstr "Címkék vesszővel elválasztva."
 
-#: tasks/models.py:252
+#: tasks/models.py:253
 msgid "task"
 msgstr "feladat"
 
-#: tasks/models.py:253 tasks/templates/base.html:27
+#: tasks/models.py:254 tasks/templates/base.html:27
 msgid "tasks"
 msgstr "feladatok"
 
-#: tasks/models.py:285 tasks/models.py:303
+#: tasks/models.py:286 tasks/models.py:304
 msgid "notes"
 msgstr "megjegyzések"
 
-#: tasks/models.py:288
+#: tasks/models.py:289
 msgid "body"
 msgstr "megjegyzés"
 
-#: tasks/models.py:298
+#: tasks/models.py:299
 msgid "author"
 msgstr "szerző"
 
-#: tasks/models.py:302
+#: tasks/models.py:303
 msgid "note"
 msgstr "megjegyzés"
 
@@ -338,6 +338,6 @@ msgstr "Mentés és másolat"
 msgid "Save and new"
 msgstr "Mentés és új"
 
-#: tasks/views.py:170
+#: tasks/views.py:188
 msgid "The project you tried to create a task for was not found"
 msgstr "Nem találtuk a projektet, amihez a feladatot hozzá akartad adni"

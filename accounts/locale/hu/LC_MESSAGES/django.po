@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-31 15:37+0200\n"
+"POT-Creation-Date: 2020-08-31 20:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: auth/templates/registration/login.html:4
-#: auth/templates/registration/login.html:15
-#: auth/templates/registration/login.html:49
+#: accounts/templates/registration/login.html:4
+#: accounts/templates/registration/login.html:15
+#: accounts/templates/registration/login.html:49
 msgid "Log in"
 msgstr "Bejelentkezés"
 
-#: auth/templates/registration/login.html:19
+#: accounts/templates/registration/login.html:19
 msgid "Your username and password didn't match. Please try again."
 msgstr "A felhasználóneved és a jelszavad nem egyezik. Kérlek próbálkozz újra."
