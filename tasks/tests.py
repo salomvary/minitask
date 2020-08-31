@@ -1,12 +1,10 @@
 from datetime import date, datetime, timedelta
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.test import Client, TestCase, TransactionTestCase
 
 from .forms.task_filter_form import TaskFilterForm
 from .models import Note, Project, Task
-
-User = get_user_model()
 
 
 class FormTests(TestCase):
