@@ -29,7 +29,7 @@
       <tr>
         <td>{{task.project}}</td>
         <td>
-          <a href="{% url 'detail' task.id %}{{ form.data|to_query_str }}">
+          <a href="{% url 'detail' task.id %}">
             {{task.title}}
           </a>
         </td>
