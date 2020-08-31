@@ -145,8 +145,6 @@ disable=print-statement,
         line-too-long,
         missing-function-docstring,
         no-else-return,
-        # TODO: this should actually be fixed: https://learndjango.com/tutorials/django-best-practices-referencing-user-model
-        imported-auth-user,
         too-few-public-methods,
         bad-continuation,
         too-many-arguments,
