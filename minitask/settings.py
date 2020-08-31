@@ -202,3 +202,8 @@ if os.environ.get("SERVE_STATIC", False):
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 LOGIN_URL = "/accounts/login/"
+
+# Settings specific to Minitask, not Django
+
+REQUIRE_DUE_DATE = os.environ.get("REQUIRE_DUE_DATE", False)
+"""Require a non-blank due date on tasks"""

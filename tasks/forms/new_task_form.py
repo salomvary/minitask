@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.forms import DateInput, ModelForm
+from django.conf import settings
 
 from tasks.models import Project, Task
 
@@ -20,6 +21,7 @@ class NewTaskForm(ModelForm):
         assignee_choices = [(user.id, user_str(user)) for user in User.objects.all()]
         self.fields["project"].choices = [("", "")] + (project_choices or [])
         self.fields["assignee"].choices = [("", "")] + (assignee_choices or [])
+        self.fields["due_date"].required = settings.REQUIRE_DUE_DATE
 
     class Meta:
         model = Task

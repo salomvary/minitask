@@ -84,6 +84,7 @@ Minitask can be configured using the following environment variables:
 - `LANGUAGE_CODE`: optional, defaults to `en-us`. Sets the user interface language. [Django documentation](https://docs.djangoproject.com/en/3.1/ref/settings/#language-code)
 - `TIME_ZONE`: optional, defaults to `UTC`. Set this to your local time zone, eg. `Europe/Budapest`. [Django documentation](https://docs.djangoproject.com/en/3.1/ref/settings/#time-zone)
 - `SERVE_STATIC`: optional, defaults to `false` in production. Set this to `true` in production unless you want to take care of serving static files outside of the Django application.
+- `REQUIRE_DUE_DATE`: optional, defaults to `false`. When set to `true` makes the due date field of tasks mandatory.
 
 ### What database should I use?
 

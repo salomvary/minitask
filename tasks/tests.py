@@ -618,6 +618,36 @@ class ViewsTests(TransactionTestCase):
         tasks = Task.objects.all()
         self.assertEqual(list(tasks), [])
 
+    def test_create_due_date_required(self):
+        """New task is not created if due date is required but not provided"""
+
+        with self.settings(REQUIRE_DUE_DATE=True):
+
+            user = User.objects.create_user("testuser", password="test")
+
+            project = Project(title="Test Project")
+            project.save()
+            project.members.add(user)
+
+            client = Client()
+            client.login(username="testuser", password="test")
+            response = client.post(
+                "/tasks",
+                {
+                    "version": 0,
+                    "project": project.id,
+                    "title": "Test Task",
+                    "status": "open",
+                    "priority": 2,
+                    "tags": "",
+                    "due_date": "",
+                },
+            )
+
+            self.assertEqual(response.status_code, 400)
+            tasks = Task.objects.all()
+            self.assertEqual(list(tasks), [])
+
     def test_create_project_not_found(self):
         """New task is not created for a project that does not exist"""
 
@@ -793,6 +823,45 @@ class ViewsTests(TransactionTestCase):
         self.assertEqual(task.priority, 2)
         self.assertEqual(task.created_by, task_creator)
         self.assertEqual(task.is_archived, True)
+
+    def test_edit_post_due_date_required(self):
+        """Task is not updated if due date is required but not provided"""
+
+        with self.settings(REQUIRE_DUE_DATE=True):
+
+            user = User.objects.create_user("testuser", password="test")
+
+            project = Project(title="Test Project")
+            project.save()
+            project.members.add(user)
+
+            task = Task(
+                project=project,
+                created_by=user,
+                title="Test Task",
+                is_archived=True,
+                due_date=datetime.now(),
+            )
+            task.save()
+
+            client = Client()
+            client.login(username="testuser", password="test")
+            response = client.post(
+                f"/tasks/{task.id}/edit",
+                {
+                    "version": 0,
+                    "project": project.id,
+                    "title": "New Title",
+                    "priority": 2,
+                    "status": "open",
+                    "tags": "",
+                    "due_date": "",
+                },
+            )
+
+            self.assertEqual(response.status_code, 400)
+            task = Task.objects.get(pk=task.id)
+            self.assertEqual(task.title, "Test Task")
 
     def test_edit_post_not_valid(self):
         """Task is updated"""
