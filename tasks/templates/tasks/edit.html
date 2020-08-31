@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load tasks_extras %}
 {% block title %}{% trans "Editing task" %}{% endblock %}
 {% block content %}
+
+<nav class="my-2">
+    <a href="{% url 'index' %}{{ last_task_filter|to_query_str }}">
+        <span aria-hidden="true">&laquo;</span>
+        {% translate "Back to the task list" %}
+    </a>
+</nav>
 
 <h2 class="my-3">{% trans "Editing task" %}</h2>
 

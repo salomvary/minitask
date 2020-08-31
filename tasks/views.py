@@ -35,6 +35,10 @@ def index(request):
     elif "next_due_date" in request.GET:
         form.next_due_date()
 
+    # "Remember" the last filter query so that the "back to the task list"
+    # links can return to a *filtered* list
+    request.session["last_task_filter"] = form.data
+
     tasks = (
         Task.objects.visible_to_user(request.user)
         .filtered_by(
@@ -79,15 +83,8 @@ def task_detail(request, task_id):
     task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
     note_form = NoteForm(request.POST)
     archive_task_form = ArchiveTaskForm(None, instance=task)
-    return render(
-        request,
-        "tasks/detail.html",
-        {
-            "user": request.user,
-            "task": task,
-            "note_form": note_form,
-            "archive_task_form": archive_task_form,
-        },
+    return render_task_detail(
+        request, task, note_form=note_form, archive_task_form=archive_task_form,
     )
 
 
@@ -101,16 +98,8 @@ def edit_task(request, task_id):
             try:
                 form.save()
             except ConcurrentUpdate:
-                return render(
-                    request,
-                    "tasks/edit.html",
-                    {
-                        "user": request.user,
-                        "task": task,
-                        "form": form,
-                        "is_concurrent_update": True,
-                    },
-                    status=409,
+                return render_task_edit(
+                    request, task, form, is_concurrent_update=True, status=409,
                 )
 
             action = request.POST.get("action")
@@ -121,18 +110,9 @@ def edit_task(request, task_id):
             else:
                 return redirect("detail", task.id)
         else:
-            return render(
-                request,
-                "tasks/edit.html",
-                {"user": request.user, "task": task, "form": form},
-                status=400,
-            )
+            return render_task_edit(request, task, form, status=400)
     else:
-        return render(
-            request,
-            "tasks/edit.html",
-            {"user": request.user, "task": task, "form": form},
-        )
+        return render_task_edit(request, task, form)
 
 
 @login_required
@@ -141,21 +121,19 @@ def archive_task(request, task_id):
 
     task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
     form = ArchiveTaskForm(request.POST or None, instance=task)
+    note_form = NoteForm()
 
     if request.method == "POST":
         if form.is_valid():
             try:
                 form.save()
             except ConcurrentUpdate:
-                return render(
+                return render_task_detail(
                     request,
-                    "tasks/detail.html",
-                    {
-                        "user": request.user,
-                        "task": task,
-                        "archive_task_form": form,
-                        "is_concurrent_update": True,
-                    },
+                    task,
+                    archive_task_form=form,
+                    note_form=note_form,
+                    is_concurrent_update=True,
                     status=409,
                 )
             return redirect("detail", task.id)
@@ -234,16 +212,45 @@ def create_note(request, task_id):
                 reverse("detail", args=[task.id]) + "#note-" + str(form.instance.id)
             )
         else:
-            return render(
+            return render_task_detail(
                 request,
-                "tasks/detail.html",
-                {
-                    "user": request.user,
-                    "task": task,
-                    "note_form": form,
-                    "archive_task_form": archive_task_form,
-                },
+                task,
+                note_form=form,
+                archive_task_form=archive_task_form,
                 status=400,
             )
     else:
         return redirect("detail", task.id)
+
+
+def render_task_detail(
+    request, task, note_form, archive_task_form, is_concurrent_update=False, **kwargs
+):
+    return render(
+        request,
+        "tasks/detail.html",
+        {
+            "user": request.user,
+            "task": task,
+            "note_form": note_form,
+            "archive_task_form": archive_task_form,
+            "is_concurrent_update": is_concurrent_update,
+            "last_task_filter": request.session.get("last_task_filter"),
+        },
+        **kwargs
+    )
+
+
+def render_task_edit(request, task, form, is_concurrent_update=False, **kwargs):
+    return render(
+        request,
+        "tasks/edit.html",
+        {
+            "user": request.user,
+            "task": task,
+            "form": form,
+            "is_concurrent_update": is_concurrent_update,
+            "last_task_filter": request.session.get("last_task_filter"),
+        },
+        **kwargs
+    )

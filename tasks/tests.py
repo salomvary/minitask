@@ -401,6 +401,54 @@ class ViewsTests(TransactionTestCase):
         self.assertNotContains(response, "Test Task 1")
         self.assertContains(response, "Test Task 2")
 
+    def test_index_filter_detail_sticky(self):
+        """Filter is retained when returning from the details page"""
+
+        user = User.objects.create_user("testuser", password="test", is_superuser=True)
+
+        project1 = Project(title="Test Project 1")
+        project1.save()
+        task1 = Task(
+            project=project1, created_by=user, title="Test Task 1", priority=-1
+        )
+        task1.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        # Search for something first (side effect is storing the query in the session)
+        client.get(f"/?project={project1.id}")
+
+        # Go to the detail page
+        response = client.get(f"/tasks/{task1.id}")
+
+        # TODO: a better assertion less prone to false positives
+        self.assertContains(response, f"project={project1.id}", status_code=200)
+
+    def test_index_filter_edit_sticky(self):
+        """Filter is retained when returning from the edit page"""
+
+        user = User.objects.create_user("testuser", password="test", is_superuser=True)
+
+        project1 = Project(title="Test Project 1")
+        project1.save()
+        task1 = Task(
+            project=project1, created_by=user, title="Test Task 1", priority=-1
+        )
+        task1.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+
+        # Search for something first (side effect is storing the query in the session)
+        client.get(f"/?project={project1.id}")
+
+        # Go to the detail page
+        response = client.get(f"/tasks/{task1.id}/edit")
+
+        # TODO: a better assertion less prone to false positives
+        self.assertContains(response, f"project={project1.id}", status_code=200)
+
     def test_new_unauthenticated(self):
         """New task form redirects to login when unauthenticated"""
 

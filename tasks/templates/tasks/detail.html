@@ -4,6 +4,13 @@
 {% block title %}{{task.title}}{% endblock %}
 {% block content %}
 
+<nav class="my-2">
+    <a href="{% url 'index' %}{{ last_task_filter|to_query_str }}">
+        <span aria-hidden="true">&laquo;</span>
+        {% translate "Back to the task list" %}
+    </a>
+</nav>
+
 <h2 class="my-3">
   {% if task.is_archived %}
     <span class="badge badge-danger">

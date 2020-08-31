@@ -1,4 +1,7 @@
+from urllib.parse import urlencode
+
 from django import template
+
 from ..formats import full_name_format
 
 register = template.Library()
@@ -45,3 +48,15 @@ def user_str(user):
             return user.username
     else:
         return user
+
+
+@register.filter(name="to_query_str")
+def to_query_str(mapping):
+    """Turn a mapping into a query string"""
+
+    if mapping:
+        query_str = urlencode(mapping)
+        if len(query_str) > 0:
+            return "?" + query_str
+
+    return ""
