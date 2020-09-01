@@ -1,6 +1,7 @@
 from urllib.parse import urlencode
 
 from django import template
+from minitask.version import MINITASK_VERSION
 
 from ..formats import full_name_format
 
@@ -60,3 +61,8 @@ def to_query_str(mapping):
             return "?" + query_str
 
     return ""
+
+
+@register.simple_tag
+def minitask_version():
+    return MINITASK_VERSION
