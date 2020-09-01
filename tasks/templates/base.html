@@ -1,6 +1,5 @@
 {% load i18n %}
 {% load static %}
-{% load tasks_extras %}
 {% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
@@ -52,12 +51,11 @@
     </main>
     <footer class="bg-dark text-light text-center p-3">
       <p>
-        <a href="{% url 'index' %}?is_archived=true">{% translate "Archived tasks" %}</a>
+        Powered by <a href="https://github.com/salomvary/minitask">Minitask</a>
+        by <a href="https://twitter.com/salomvary">@salomvary</a>.
       </p>
       <p>
-        <a href="https://github.com/salomvary/minitask">Minitask</a>
-        {% minitask_version %}
-        by <a href="https://twitter.com/salomvary">@salomvary</a>.
+        <a href="{% url 'index' %}?is_archived=true">{% translate "Archived tasks" %}</a>
       </p>
     </footer>
   </body>
