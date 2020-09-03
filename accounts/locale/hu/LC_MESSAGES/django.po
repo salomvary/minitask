@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-03 07:23+0200\n"
+"POT-Creation-Date: 2020-09-03 07:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,11 +22,11 @@ msgstr ""
 msgid "accounts"
 msgstr "felhasználói fiókok"
 
-#: accounts/models.py:7
+#: accounts/models.py:8
 msgid "user"
 msgstr "felhasználó"
 
-#: accounts/models.py:8
+#: accounts/models.py:9
 msgid "users"
 msgstr "felhasználók"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-03 07:23+0200\n"
+"POT-Creation-Date: 2020-09-03 07:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: tasks/admin.py:8 tasks/admin.py:10
+msgid "Minitask administration"
+msgstr "Minitask adminisztráció"
+
+#: tasks/apps.py:6 tasks/models.py:254 tasks/templates/base.html:28
+msgid "tasks"
+msgstr "feladatok"
 
 #: tasks/forms/task_filter_form.py:20
 msgid "Not"
@@ -173,10 +181,6 @@ msgstr "Címkék vesszővel elválasztva."
 #: tasks/models.py:253
 msgid "task"
 msgstr "feladat"
-
-#: tasks/models.py:254 tasks/templates/base.html:28
-msgid "tasks"
-msgstr "feladatok"
 
 #: tasks/models.py:286 tasks/models.py:304
 msgid "notes"
