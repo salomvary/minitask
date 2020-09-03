@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-31 20:12+0200\n"
+"POT-Creation-Date: 2020-09-03 07:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: accounts/apps.py:7
+msgid "accounts"
+msgstr "felhasználói fiókok"
+
+#: accounts/models.py:7
+msgid "user"
+msgstr "felhasználó"
+
+#: accounts/models.py:8
+msgid "users"
+msgstr "felhasználók"
 
 #: accounts/templates/registration/login.html:4
 #: accounts/templates/registration/login.html:15

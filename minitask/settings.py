@@ -89,7 +89,7 @@ ALLOWED_HOSTS = [os.environ["ALLOWED_HOSTS"]] if "ALLOWED_HOSTS" in os.environ e
 
 INSTALLED_APPS = [
     "tasks.apps.TasksConfig",
-    "accounts",
+    "accounts.apps.AccountsConfig",
     "taggit",
     "django.contrib.admin",
     "django.contrib.auth",

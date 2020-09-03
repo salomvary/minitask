@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-31 20:12+0200\n"
+"POT-Creation-Date: 2020-09-03 07:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -174,7 +174,7 @@ msgstr "Címkék vesszővel elválasztva."
 msgid "task"
 msgstr "feladat"
 
-#: tasks/models.py:254 tasks/templates/base.html:27
+#: tasks/models.py:254 tasks/templates/base.html:28
 msgid "tasks"
 msgstr "feladatok"
 
@@ -194,20 +194,20 @@ msgstr "szerző"
 msgid "note"
 msgstr "megjegyzés"
 
-#: tasks/templates/base.html:33
+#: tasks/templates/base.html:34
 msgid "admin"
 msgstr "adminisztráció"
 
-#: tasks/templates/base.html:39
+#: tasks/templates/base.html:40
 msgid "sign out"
 msgstr "kilépés"
 
-#: tasks/templates/base.html:46 tasks/templates/tasks/new.html:3
+#: tasks/templates/base.html:47 tasks/templates/tasks/new.html:3
 #: tasks/templates/tasks/new.html:6
 msgid "New task"
 msgstr "Új feladat"
 
-#: tasks/templates/base.html:59 tasks/templates/index.html:9
+#: tasks/templates/base.html:56 tasks/templates/index.html:9
 msgid "Archived tasks"
 msgstr "Archivált feladatok"
 
