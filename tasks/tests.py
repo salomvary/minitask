@@ -755,6 +755,7 @@ class ViewsTests(TransactionTestCase):
         """Task details are rendered"""
 
         user = User.objects.create_user("testuser", password="test")
+        user.user_permissions.add(Permission.objects.get(codename="delete_task"))
         task_creator = User.objects.create_user("task.creator", password="test")
 
         project = Project(title="Test Project")
@@ -778,6 +779,27 @@ class ViewsTests(TransactionTestCase):
         self.assertContains(response, "HIGHEST")
         self.assertContains(response, "task.creator")
         self.assertContains(response, "ARCHIVED")
+        # Archive button
+        self.assertContains(response, 'name="is_archived"')
+
+    def test_detail_no_delete_task_permission(self):
+        """Task details has no Archive button if the user does not have delete_task permission"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        project.members.add(user)
+        task = Task(project=project, created_by=user, title="Test Task", priority=2,)
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.get("/tasks/" + str(task.id))
+
+        self.assertEqual(response.status_code, 200)
+        # Archive button
+        self.assertNotContains(response, 'name="is_archived"')
 
     def test_detail_not_member(self):
         """Task details are rendered"""
@@ -1088,6 +1110,7 @@ class ViewsTests(TransactionTestCase):
         """Task is not archived if the user is not project member"""
 
         user = User.objects.create_user("testuser", password="test")
+        user.user_permissions.add(Permission.objects.get(codename="delete_task"))
 
         project = Project(title="Test Project")
         project.save()
@@ -1106,10 +1129,34 @@ class ViewsTests(TransactionTestCase):
         task.refresh_from_db()
         self.assertEqual(task.is_archived, False)
 
+    def test_archive_post_no_permission(self):
+        """Task is not archived if the user does not have delete_task permission"""
+
+        user = User.objects.create_user("testuser", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        project.members.add(user)
+
+        task = Task(project=project, created_by=user, title="Test Task")
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        client.post(
+            "/tasks/" + str(task.id) + "/archive",
+            {"version": "0", "is_archived": "true"},
+        )
+
+        # self.assertEqual(response.status_code, 404)
+        task.refresh_from_db()
+        self.assertEqual(task.is_archived, False)
+
     def test_archive_post(self):
         """Task is archived"""
 
         user = User.objects.create_user("testuser", password="test")
+        user.user_permissions.add(Permission.objects.get(codename="delete_task"))
 
         project = Project(title="Test Project")
         project.save()
@@ -1374,6 +1421,7 @@ class ViewTestsWithTransaction(TransactionTestCase):
         """Concurrent archivals are prevented"""
 
         user = User.objects.create_user("testuser", password="test")
+        user.user_permissions.add(Permission.objects.get(codename="delete_task"))
 
         project = Project(title="Test Project")
         project.save()

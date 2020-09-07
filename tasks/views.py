@@ -1,7 +1,7 @@
 from urllib.parse import SplitResult, urlsplit
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.http import Http404
 from django.http.request import validate_host
@@ -143,7 +143,9 @@ def edit_task(request, task_id):
         return render_task_edit(request, task, form)
 
 
+# TODO consider adding a custom "tasks.archive_task" permission
 @login_required
+@permission_required("tasks.delete_task")
 def archive_task(request, task_id):
     """Set the is_archived flag on a task"""
 

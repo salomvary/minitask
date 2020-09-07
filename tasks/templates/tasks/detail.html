@@ -94,28 +94,29 @@
 </table>
 
 <div class="text-right my-4">
-  <form action="{% url 'archive' task.id %}" method="POST" class="d-inline">
-    {% csrf_token %}
-    {{ archive_task_form.version }}
-    <button
-      class="btn btn-danger"
-      name="is_archived"
-      value="{% if task.is_archived %}false{% else %}true{% endif %}"
-    >
-      {% if task.is_archived %}
-      {% translate "Restore" %}
-      {% else %}
-      {% translate "Archive" %}
-      {% endif %}
-    </button>
-  </form>
-
-  <a href="{% url 'copy' task.id %}" class="btn btn-secondary">
-    {% translate "Duplicate" %}
-  </a>
-  <a href="{% url 'edit' task.id %}" class="btn btn-primary">
-    {% translate "Edit" %}
-  </a>
+    {% if perms.tasks.delete_task %}
+        <form action="{% url 'archive' task.id %}" method="POST" class="d-inline">
+            {% csrf_token %}
+            {{ archive_task_form.version }}
+            <button
+                class="btn btn-danger"
+                name="is_archived"
+                value="{% if task.is_archived %}false{% else %}true{% endif %}"
+            >
+            {% if task.is_archived %}
+            {% translate "Restore" %}
+            {% else %}
+            {% translate "Archive" %}
+            {% endif %}
+            </button>
+        </form>
+    {% endif %}
+    <a href="{% url 'copy' task.id %}" class="btn btn-secondary">
+        {% translate "Duplicate" %}
+    </a>
+    <a href="{% url 'edit' task.id %}" class="btn btn-primary">
+        {% translate "Edit" %}
+    </a>
 </div>
 
 <h3>{% translate "Notes" %}</h3>
