@@ -112,7 +112,13 @@ def task_detail(request, task_id):
 @login_required
 def edit_task(request, task_id):
     task = get_object_or_404(Task.objects.visible_to_user(request.user), pk=task_id)
-    form = NewTaskForm(request.POST or None, instance=task, user=request.user)
+    can_change_task = request.user.has_perm("tasks.change_task")
+    form = NewTaskForm(
+        request.POST or None,
+        instance=task,
+        user=request.user,
+        restricted=not can_change_task,
+    )
 
     if request.method == "POST":
         if form.is_valid():
@@ -131,6 +137,7 @@ def edit_task(request, task_id):
             else:
                 return redirect("detail", task.id)
         else:
+            # Invalid form
             return render_task_edit(request, task, form, status=400)
     else:
         return render_task_edit(request, task, form)

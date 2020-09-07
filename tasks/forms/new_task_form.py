@@ -6,9 +6,12 @@ from tasks.models import Project, Task
 
 from ..templatetags.tasks_extras import user_str
 
+UNRESTRICTED_FIELDS = set(["version", "status"])
+"""Fields that can be edited even if the user is restricted from editing all fields"""
+
 
 class NewTaskForm(ModelForm):
-    def __init__(self, *args, user, initial=None, **kwargs):
+    def __init__(self, *args, user, initial=None, restricted=False, **kwargs):
         # Set initial assignee when required
         if settings.REQUIRE_ASSIGNEE:
             initial = initial.copy() if initial else {}
@@ -32,6 +35,11 @@ class NewTaskForm(ModelForm):
         # Some fields can be configured to be required
         self.fields["due_date"].required = settings.REQUIRE_DUE_DATE
         self.fields["assignee"].required = settings.REQUIRE_ASSIGNEE
+
+        if restricted:
+            for field_name, field in self.fields.items():
+                if not field_name in UNRESTRICTED_FIELDS:
+                    field.disabled = True
 
     class Meta:
         model = Task

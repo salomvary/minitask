@@ -1,5 +1,6 @@
 from datetime import date, datetime, timedelta
 
+from django.contrib.auth.models import Permission
 from django.test import Client, TestCase, TransactionTestCase
 
 from accounts.models import User
@@ -824,6 +825,7 @@ class ViewsTests(TransactionTestCase):
         """Task edit form only contains projects visible to the user"""
 
         user = User.objects.create_user("testuser", password="test")
+        user.user_permissions.add(Permission.objects.get(codename="change_task"))
 
         project1 = Project(title="Visible Project")
         project1.save()
@@ -846,6 +848,7 @@ class ViewsTests(TransactionTestCase):
         """Task edit form is not rendered if the user is not project member"""
 
         user = User.objects.create_user("testuser", password="test")
+        user.user_permissions.add(Permission.objects.get(codename="change_task"))
 
         project = Project(title="Test Project")
         project.save()
@@ -862,6 +865,7 @@ class ViewsTests(TransactionTestCase):
         """Task is updated"""
 
         user = User.objects.create_user("testuser", password="test")
+        user.user_permissions.add(Permission.objects.get(codename="change_task"))
         task_creator = User.objects.create_user("task.creator", password="test")
 
         project = Project(title="Test Project")
@@ -896,12 +900,81 @@ class ViewsTests(TransactionTestCase):
         self.assertEqual(task.created_by, task_creator)
         self.assertEqual(task.is_archived, True)
 
+    def test_edit_post_no_change_task_permission(self):
+        """Task edit form submission is unauthorized if the user does not have change_task permission"""
+
+        user = User.objects.create_user("testuser", password="test")
+        task_creator = User.objects.create_user("task.creator", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        project.members.add(user)
+        task = Task(
+            project=project,
+            created_by=task_creator,
+            title="Test Task",
+            is_archived=True,
+            version=0,
+        )
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        client.post(
+            "/tasks/" + str(task.id) + "/edit",
+            {
+                "version": 1,
+                "project": project.id,
+                "title": "New Title",
+                "priority": 2,
+                "status": "open",
+                "tags": "",
+            },
+        )
+
+        # self.assertEqual(response.status_code, 401)
+        task.refresh_from_db()
+        self.assertEqual(task.title, "Test Task")
+
+    def test_edit_post_no_change_task_permission_status_only(self):
+        """
+        Task edit form submission with status field is allowed
+        even if the user does not have change_task permission
+        """
+
+        user = User.objects.create_user("testuser", password="test")
+        task_creator = User.objects.create_user("task.creator", password="test")
+
+        project = Project(title="Test Project")
+        project.save()
+        project.members.add(user)
+        task = Task(
+            project=project,
+            created_by=task_creator,
+            title="Test Task",
+            is_archived=True,
+            status="open",
+            version=0,
+        )
+        task.save()
+
+        client = Client()
+        client.login(username="testuser", password="test")
+        response = client.post(
+            "/tasks/" + str(task.id) + "/edit", {"version": 0, "status": "done",},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        task.refresh_from_db()
+        self.assertEqual(task.status, "done")
+
     def test_edit_post_due_date_required(self):
         """Task is not updated if due date is required but not provided"""
 
         with self.settings(REQUIRE_DUE_DATE=True):
 
             user = User.objects.create_user("testuser", password="test")
+            user.user_permissions.add(Permission.objects.get(codename="change_task"))
 
             project = Project(title="Test Project")
             project.save()
@@ -941,6 +1014,7 @@ class ViewsTests(TransactionTestCase):
         with self.settings(REQUIRE_ASSIGNEE=True):
 
             user = User.objects.create_user("testuser", password="test")
+            user.user_permissions.add(Permission.objects.get(codename="change_task"))
 
             project = Project(title="Test Project")
             project.save()
@@ -978,6 +1052,7 @@ class ViewsTests(TransactionTestCase):
         """Task is updated"""
 
         user = User.objects.create_user("testuser", password="test")
+        user.user_permissions.add(Permission.objects.get(codename="change_task"))
 
         project = Project(title="Test Project")
         project.save()
@@ -1250,6 +1325,7 @@ class ViewTestsWithTransaction(TransactionTestCase):
         """Concurrent edits are prevented"""
 
         user = User.objects.create_user("testuser", password="test")
+        user.user_permissions.add(Permission.objects.get(codename="change_task"))
 
         project = Project(title="Test Project")
         project.save()
