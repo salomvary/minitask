@@ -24,7 +24,9 @@ considered to be stable**.
 
 ## Screenshots
 
-![Screenshot of Minitask](screenshot.png)
+![Screenshot of Minitask in English](screenshot-en.png)
+
+![Screenshot of Minitask in Hungarian](screenshot-hu.png)
 
 ## Demo
 
